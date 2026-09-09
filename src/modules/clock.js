@@ -3,6 +3,7 @@ import shows from '../data/shows.json';
 
 const TZ_BY_CITY = {
   Vilnius: 'Europe/Vilnius',
+  Kaunas: 'Europe/Vilnius',
   Berlin: 'Europe/Berlin',
   Amsterdam: 'Europe/Amsterdam',
   Oslo: 'Europe/Oslo',
@@ -40,9 +41,8 @@ export function cityTime(city) {
 }
 
 // Refine the build-time "tonight" flag against the viewer's real clock,
-// and keep the footer clock ticking for the touch/reduced-motion fallback.
+// and keep the footer home-base clock ticking (always KAUNAS — v5 A5).
 export function initClockFallback() {
-  const ns = nextShow();
   const footer = document.querySelector('[data-footer-clock]');
   // mark tonight
   document.querySelectorAll('.show[data-date]').forEach((row) => {
@@ -54,8 +54,8 @@ export function initClockFallback() {
       }
     }
   });
-  if (!ns || !footer) return;
-  const tick = () => { footer.textContent = `${ns.city.toUpperCase()} ${cityTime(ns.city)}`; };
+  if (!footer) return;
+  const tick = () => { footer.textContent = `KAUNAS ${cityTime('Kaunas')}`; };
   tick();
   return setInterval(tick, 1000);
 }

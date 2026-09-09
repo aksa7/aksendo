@@ -208,7 +208,7 @@ function head({ title, desc, canonical, extraLD }) {
   <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-var.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrainsmono-latin.woff2" crossorigin>
   <link rel="preload" as="image" type="image/avif" fetchpriority="high"
-        imagesrcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1134.avif 1134w" imagesizes="100vw">
+        imagesrcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" imagesizes="100vw">
   <link rel="stylesheet" href="/src/styles/main.css">
   ${extraLD ? `<script type="application/ld+json">${JSON.stringify(extraLD)}</script>` : ''}`;
 }
@@ -240,7 +240,7 @@ const index = `<!doctype html>
 <main id="main">
   <section class="hero" id="top" aria-label="Intro">
     <div class="hero__media" data-develop>
-      ${pic({ name: 'hero', widths: [640, 960, 1134], sizes: '100vw', alt: 'Aksendo on the coast, hand to the brim of a hat, storm sky behind — press portrait.', w: 1134, h: 782, priority: true, lazy: false })}
+      ${pic({ name: 'hero', widths: [640, 960, 1600, 2560], sizes: '100vw', alt: 'Aksendo from behind at the decks, fist raised, Decks & Stories shirt — live press portrait.', w: 2560, h: 1920, priority: true, lazy: false })}
     </div>
     <div class="hero__inner">
       <h1 class="hero__wordmark" data-wordmark>AKSENDO</h1>
@@ -296,7 +296,7 @@ const index = `<!doctype html>
   <footer class="section contact cv-auto" id="contact" aria-labelledby="contact-h">
     <div class="wrap grid">
       <h2 class="section-head" id="contact-h">Contact</h2>
-      <a class="contact__book" href="mailto:${site.booking}">${site.booking.toUpperCase()}</a>
+      <a class="contact-mail contact__book" href="mailto:${site.booking}"><span class="contact-mail__part">BOOKINGS@</span><span class="contact-mail__part">AKSENDO.COM</span></a>
       <div class="contact__row">
         <a href="${site.pressPdf}" download>DOWNLOAD PRESS KIT (PDF) ↓</a>
         <a href="/press">PRESS ↗</a>
@@ -326,7 +326,7 @@ const index = `<!doctype html>
 
 <footer class="site-foot">
   <span>© <span data-year>2026</span> AKSENDO · KAUNAS, LITHUANIA</span>
-  <span class="footer-clock" data-footer-clock></span>
+  <span class="footer-clock" data-footer-clock>KAUNAS</span>
   <span>${genres}</span>
 </footer>
 

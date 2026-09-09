@@ -48,8 +48,9 @@ async function fromSvg(svg, name, size, formats = FORMATS) {
 }
 
 console.log('› photography');
-// hero — landscape source; full-bleed. keep the face (attention crop).
-await responsive('hero-hat-coast_1134x782.jpg', 'hero', [640, 960, 1134], { fit: 'cover' });
+// hero — IMG_4044.jpg (3264×2448, ~4:3). Full-bleed cover; attention keeps the DJ centred
+// for both landscape (16:9 desktop) and taller mobile crops (≈4:5 via object-fit).
+await responsive('IMG_4044.jpg', 'hero', [640, 960, 1600, 2560], { fit: 'cover' });
 // bio / press live shots
 await responsive('portrait-dj-river_660x1275.jpg', 'portrait', [480, 660], { fit: 'cover' });
 await responsive('live-decksandstories_1241x931.jpg', 'live', [640, 1000, 1241], { fit: 'cover' });
@@ -58,7 +59,7 @@ console.log('› mix thumbnails (placeholder, reuse real frames)');
 for (const [src, nm] of [
   ['portrait-dj-river_660x1275.jpg', 'mix-1'],
   ['live-decksandstories_1241x931.jpg', 'mix-2'],
-  ['hero-hat-coast_1134x782.jpg', 'mix-3']
+  ['IMG_4044.jpg', 'mix-3']
 ]) await responsive(src, nm, [480, 800], { fit: 'cover', height: 9 / 16 * 800 });
 
 console.log('› placeholder release covers (monochrome, no baked text)');
@@ -90,7 +91,7 @@ for (const [name, svg] of Object.entries(covers)) {
 
 console.log('› OG image 1200x630');
 {
-  const input = join(SRC, 'hero-hat-coast_1134x782.jpg');
+  const input = join(SRC, 'IMG_4044.jpg');
   const hero = await sharp(input).grayscale().resize(1200, 630, { fit: 'cover', position: 'attention' })
     .modulate({ brightness: 0.62 }).toBuffer();
   const overlay = Buffer.from(

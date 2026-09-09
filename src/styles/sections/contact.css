@@ -1,5 +1,6 @@
 /* contact.css — loud mailto, links, booking form. */
 .contact { background: var(--paper); }
+.contact-mail,
 .contact__book {
   font-family: var(--font-display);
   font-weight: 800;
@@ -8,9 +9,11 @@
   letter-spacing: -0.03em;
   text-transform: uppercase;
   font-variation-settings: "wght" 800, "wdth" 112;
-  word-break: break-word;
   display: inline-block;
+  max-width: 100%;
 }
+.contact-mail__part { white-space: nowrap; }
+.contact-mail:hover,
 .contact__book:hover { background: var(--ink); color: var(--paper); }
 
 .contact__row { margin-top: var(--s-8); display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); }

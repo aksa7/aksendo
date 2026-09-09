@@ -1,7 +1,8 @@
-/* cursor.css — a readout that trails the cursor: next show's local time. */
+/* cursor.css — one fixed top-left city/time readout for the whole page. */
 .cursor-clock {
   position: fixed;
-  top: 0; left: 0;
+  top: 12px;
+  left: 12px;
   z-index: 35;
   padding: 4px 8px;
   font-family: var(--font-mono);
@@ -12,14 +13,16 @@
   background: var(--paper);
   pointer-events: none;
   white-space: nowrap;
-  transform: translate3d(-100px, -100px, 0);
-  will-change: transform;
   display: none;                  /* enabled by JS on fine-pointer desktop only */
 }
 body.has-cursor-clock .cursor-clock { display: block; }
 
-/* static footer variant for touch / reduced-motion */
+/* home-base clock — always KAUNAS (touch / reduced-motion / everyone) */
 .footer-clock {
   font-family: var(--font-mono); font-size: var(--t-meta-sm);
   letter-spacing: var(--track-meta); text-transform: uppercase; color: var(--grey-60);
+}
+
+@media (max-width: 819px) {
+  .cursor-clock { display: none !important; } /* footer carries the clock on small screens */
 }

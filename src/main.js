@@ -1,6 +1,6 @@
 // main.js — progressive enhancement entry point.
 // Baseline (this file only) is tiny and runs everywhere. Heavy motion libraries
-// (Lenis, GSAP, OGL) are dynamically imported only on capable desktops.
+// (GSAP, OGL) are dynamically imported only on capable desktops.
 import { reducedMotion, isDesktop, finePointer, weakDevice, hasWebGL2 } from './modules/capabilities.js';
 import { initForm } from './modules/form.js';
 import { initMixes } from './modules/embeds.js';

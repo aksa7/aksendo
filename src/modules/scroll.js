@@ -1,38 +1,32 @@
-// scroll.js — Lenis smooth scroll wired to GSAP ScrollTrigger + the velocity bus.
-import Lenis from 'lenis';
+// scroll.js — native scroll + velocity bus + GSAP ScrollTrigger.
+// Smooth-scroll library removed (v5 A2): it read as lag. ScrubTrigger reads native scroll.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { setScroll } from './bus.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-let lenis;
-
 export function initScroll() {
-  lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 1, smoothWheel: true });
+  let prevY = window.scrollY || window.pageYOffset || 0;
+  let prevT = performance.now();
 
-  lenis.on('scroll', (e) => {
-    setScroll({ scroll: e.scroll, velocity: e.velocity });
-    ScrollTrigger.update();
-  });
+  // Rolling scrollY delta → velocity (same bus consumers as before: type, develop).
+  function sample(now) {
+    const y = window.scrollY || window.pageYOffset || 0;
+    const dt = Math.max(now - prevT, 1);
+    // Scale to ~px-per-frame units for the velocity bus normalisation.
+    const velocity = ((y - prevY) / dt) * 16.67;
+    prevY = y;
+    prevT = now;
+    setScroll({ scroll: y, velocity });
+    requestAnimationFrame(sample);
+  }
+  requestAnimationFrame(sample);
 
-  // drive Lenis from GSAP's ticker so everything shares one rAF
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
+  // Native scroll drives ScrollTrigger; refresh on resize only.
+  ScrollTrigger.config({ ignoreMobileResize: true });
+  window.addEventListener('resize', () => ScrollTrigger.refresh(), { passive: true });
 
-  // anchor links go through Lenis
-  document.querySelectorAll('a[href^="#"]').forEach((a) => {
-    a.addEventListener('click', (e) => {
-      const id = a.getAttribute('href');
-      if (id.length < 2) return;
-      const t = document.querySelector(id);
-      if (!t) return;
-      e.preventDefault();
-      lenis.scrollTo(t, { offset: 0 });
-    });
-  });
-
-  return { lenis, gsap, ScrollTrigger };
+  // Anchor jumps use CSS scroll-behavior: smooth — no JS hijack.
+  return { gsap, ScrollTrigger };
 }
-
-export function getLenis() { return lenis; }

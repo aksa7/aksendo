@@ -3,7 +3,7 @@
 import { bus } from './bus.js';
 
 export function initReactiveType() {
-  const els = [...document.querySelectorAll('[data-wordmark], .section-head, .contact__book, .pull')];
+  const els = [...document.querySelectorAll('[data-wordmark], .section-head, .contact-mail, .contact__book, .pull')];
   if (!els.length) return;
 
   const REST = 125, FAST = 100;
@@ -20,7 +20,7 @@ export function initReactiveType() {
     current += (target - current) * 0.12;
     const v = current.toFixed(1);
     visible.forEach((el) => {
-      const light = el.classList.contains('pull') || el.classList.contains('contact__book');
+      const light = el.classList.contains('pull') || el.classList.contains('contact__book') || el.classList.contains('contact-mail');
       el.style.fontVariationSettings = `"wght" ${light ? 800 : 900}, "wdth" ${v}`;
     });
     requestAnimationFrame(frame);
