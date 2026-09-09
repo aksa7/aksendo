@@ -64,11 +64,12 @@ Nothing above blocks the build; each degrades to an absence, never a broken cont
 ## Image inventory
 | Source (`design/source/`) | Used as | Generated (`public/img/gen/`) | Status |
 |---|---|---|---|
-| IMG_4044.jpg (3264×2448) | Hero, OG, mix-3 thumb | hero-{640,960,1600,2560}.\*, og.jpg | real, full-res (v5 A3) |
+| IMG_4044.jpg (3264×2448) | Desktop hero, OG, mix-3 | hero-{640,960,1600,2560}.\*, og.jpg | real |
+| aksendo.jpg (4284×5712) | Mobile hero | hero-m-{480,750,1080,1440}.\* | real |
 | portrait-dj-river_660x1275.jpg | Press portrait, mix-1 thumb | portrait-{480,660}.\*, mix-1-\* | real |
 | live-decksandstories_1241x931.jpg | Press live, mix-2 thumb | live-{640,1000,1241}.\*, mix-2-\* | real |
 | shows/{venue-slug}.jpg | Show row thumbs | show-{slug}-{64,128,256}.\* | **none yet** — see checklist |
-| — (generated) | Release covers ×3 | cover-{id}-{400,800,1200}.\* | **placeholder** (abstract monochrome) |
+| song_artwork/*.jpg | Release covers ×3 | cover-{id}-{400,800,1200}.\* | real (equal square crops) |
 | — (generated) | Grain overlay | grain.webp | ok |
 | — (generated) | Blue-noise dither | bluenoise.png (void-and-cluster) | ok |
 
