@@ -93,7 +93,7 @@ CSS `animation-timeline: view()` (no JS libs under 820px). Visible on first scro
 Show artwork (when present) deals in with its row.
 
 ## Still to verify before "done"
-- Lighthouse mobile ≥92 / desktop ≥88 (run against `wrangler dev` or a deploy).
+- ~~Lighthouse mobile ≥92~~ — **98** on `vite preview` mobile (v5 pass). Desktop still to spot-check.
 - Real-device 55fps scroll check on the developing hero.
 - Cross-browser: iOS Safari (100svh + smooth scroll), Firefox.
 - 200% zoom / 320px.
