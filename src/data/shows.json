@@ -1,11 +1,12 @@
 [
-  { "date": "2026-09-11", "time": null, "venue": "Private Event", "city": "Vilnius", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": "Private" },
-  { "date": "2026-09-12", "time": null, "venue": "Private Event", "city": "Vilnius", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": "Private" },
-  { "date": "2026-09-13", "time": null, "venue": "Private Event", "city": "Vilnius", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": "Private" },
+  { "date": "2026-09-11", "time": null, "venue": "private event", "city": "Svencelė", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": null },
+  { "date": "2026-09-12", "time": null, "venue": "Private Event", "city": "Kaunas", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": null },
+  { "date": "2026-09-13", "time": null, "venue": "Dancing Street", "city": "Kazlų Rūda", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-09-18", "time": null, "venue": "Corner Café", "city": "Vilnius", "country": "LT", "billing": null, "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-09-19", "time": null, "venue": "Dancing Street", "city": "TBC", "country": "LT", "billing": "Decks & Stories", "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-10-02", "time": null, "venue": "Corner Café", "city": "Vilnius", "country": "LT", "billing": "Road To ADE · Decks & Stories", "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-10-15", "time": null, "venue": "Bulbul Berlin", "city": "Berlin", "country": "DE", "billing": "Decks&Stories x Bulbul Berlin", "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-10-22", "time": null, "venue": "Zu Hause", "city": "Amsterdam", "country": "NL", "billing": null, "tickets": null, "artwork": null, "festival": "ADE 2026" },
-  { "date": "2026-10-22", "time": null, "venue": "ADE Network Hub", "city": "Amsterdam", "country": "NL", "billing": "with Beskar Bookings, Decks & Stories, Loud Ladies", "tickets": null, "artwork": null, "festival": "ADE 2026" }
+  { "date": "2026-10-22", "time": null, "venue": "ADE Network Hub", "city": "Amsterdam", "country": "NL", "billing": "with Beskar Bookings, Decks & Stories, Loud Ladies", "tickets": null, "artwork": null, "festival": "ADE 2026" },
+  { "date": "2026-11-01", "time": null, "venue": "YZY Bar", "city": "Kaunas Old Town", "country": "LT", "billing": "Decks&Stories x YZY Bar", "tickets": null, "artwork": null, "festival": null }
 ]

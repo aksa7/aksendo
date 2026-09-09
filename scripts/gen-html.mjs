@@ -191,22 +191,25 @@ const musicHtml = releases.map(releaseCard).join('');
 /* ---------- mixes (YouTube banners) ---------- */
 const ytChannel = links.artist.youtube;
 function mixCard(m) {
-  const thumb = m.thumb || m.thumbFallback || '';
-  const fallback = m.thumbFallback || thumb;
-  return `<a class="mix" href="${attr(m.url)}" target="_blank" rel="noopener" data-mix data-video="${attr(m.id)}" aria-label="${attr(m.title)} — Watch mix on YouTube">
-  <span class="mix__media" aria-hidden="true">
-    <img src="${attr(thumb)}" alt="" width="1280" height="720" loading="lazy" decoding="async"
-         onerror="this.onerror=null;this.src='${attr(fallback)}'">
-  </span>
-  <span class="mix__body">
+  const thumb = m.thumbFallback || m.thumb || '';
+  const hi = m.thumb || thumb;
+  // Title lives BELOW the frame — YouTube thumbs already bake titles into the image.
+  return `<article class="mix">
+  <a class="mix__frame" href="${attr(m.url)}" target="_blank" rel="noopener" data-mix data-video="${attr(m.id)}" aria-label="${attr(m.title)} — Watch mix on YouTube">
+    <span class="mix__media" aria-hidden="true">
+      <img src="${attr(hi)}" alt="" width="1280" height="720" loading="lazy" decoding="async"
+           onerror="this.onerror=null;this.src='${attr(thumb)}'">
+    </span>
     <span class="mix__play" aria-hidden="true"></span>
-    <span class="mix__title">${esc(m.title)}</span>
-    <span class="mix__cta">Watch mix ↗</span>
-  </span>
-</a>`;
+  </a>
+  <div class="mix__meta">
+    <h3 class="mix__title"><a href="${attr(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></h3>
+    <a class="mix__cta" href="${attr(m.url)}" target="_blank" rel="noopener">Watch mix ↗</a>
+  </div>
+</article>`;
 }
 const mixesHtml = mixes.length
-  ? `<div class="mixes__list">${mixes.map(mixCard).join('')}</div>
+  ? `<div class="mixes__grid">${mixes.map(mixCard).join('')}</div>
       <div class="mixes__more"><a href="${attr(ytChannel)}" target="_blank" rel="noopener">Watch more mixes ↗</a></div>`
   : `<p class="mixes__empty">Mixes on YouTube — <a href="${attr(ytChannel)}" target="_blank" rel="noopener">Open channel ↗</a></p>`;
 
@@ -218,10 +221,10 @@ const appearancesHtml = `<div class="appearances">
   </ul>
 </div>`;
 
-const signalLines = Array.from({ length: 7 }, () => `<span class="signal__line" aria-hidden="true">aksendo</span>`).join('');
+const signalLines = Array.from({ length: 7 }, () => `<span class="signal__line">aksendo</span>`).join('');
 const signalHtml = `<section class="signal cv-auto" id="signal" aria-label="aksendo">
   <div class="signal__inner">
-    <div class="signal__stack">${signalLines}</div>
+    <div class="signal__stack" aria-hidden="true">${signalLines}</div>
     <p class="signal__manifesto">${esc(site.manifesto || 'shaping my sound little by little')}</p>
   </div>
 </section>`;
@@ -373,7 +376,6 @@ const index = `<!doctype html>
         <p data-bio="2">${esc(site.bio[1])}</p>
         <p class="pull">${esc(site.pullQuote)}</p>
         <p data-bio="3">${esc(site.bio[2])}</p>
-        ${margin('R', 'live', 'LOOPING, LAYERING, EXTENDING — LIVE')}
         <p data-bio="4">${esc(site.bio[3])}</p>
         <p class="bio__evolving" data-evolving="${attr(site.evolving || '')}"></p>
       </div>

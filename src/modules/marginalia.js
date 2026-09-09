@@ -9,8 +9,7 @@ const ANCHORS = {
   zamna: '#release-pico-de-amor',
   road: '#release-berlin-to-ade',
   cyprus: '#release-temporary-miracle',
-  kaunas: '[data-bio="1"]',
-  live: '[data-bio="3"]'
+  kaunas: '[data-bio="1"]'
 };
 
 export function initMarginaliaDesktop() {

@@ -1,60 +1,62 @@
-/* mixes.css — cinematic 1-per-row YouTube banners. */
-.mixes__list {
+/* mixes.css — 3×2 cinematic grid. Title sits under the thumb (no clash with baked YT titles). */
+.mixes__grid {
   display: grid;
-  gap: var(--s-6);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-8) var(--s-6);
 }
 .mix {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr;
-  align-items: stretch;
+  gap: var(--s-3);
+  min-width: 0;
+}
+.mix__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: var(--ink);
-  color: var(--paper);
   border: 1px solid var(--ink);
-  min-height: clamp(11rem, 28vw, 18rem);
-  text-decoration: none;
+  color: var(--paper);
 }
 .mix__media {
   position: absolute;
   inset: 0;
-  z-index: 0;
 }
 .mix__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1) contrast(1.05);
-  transition: transform 420ms ease, filter 420ms ease;
+  filter: grayscale(1) contrast(1.06);
+  transform: scale(1.02);
+  transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 420ms ease;
 }
-.mix:hover .mix__media img,
-.mix:focus-visible .mix__media img {
-  transform: scale(1.04);
-  filter: grayscale(0.35) contrast(1.05);
+.mix__frame:hover .mix__media img,
+.mix__frame:focus-visible .mix__media img {
+  transform: scale(1.08);
+  filter: grayscale(0.25) contrast(1.05);
 }
+/* soft vignette only — no heavy text scrim over the thumb art */
 .mix__media::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.55) 100%);
-}
-.mix__body {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: var(--s-4);
-  padding: var(--s-6) var(--s-6) var(--s-6) var(--s-6);
-  max-width: min(52ch, 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 45%);
+  pointer-events: none;
 }
 .mix__play {
-  width: 3rem; height: 3rem;
-  border: 1px solid rgba(255,255,255,0.85);
+  position: absolute;
+  left: 50%; top: 50%;
+  z-index: 2;
+  width: 3.25rem; height: 3.25rem;
+  margin: -1.625rem 0 0 -1.625rem;
+  border: 1px solid rgba(255,255,255,0.9);
   border-radius: 50%;
   display: grid; place-items: center;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(2px);
+  transition: transform var(--dur-hover) ease, background var(--dur-hover) linear;
 }
+.mix__frame:hover .mix__play { transform: scale(1.1); background: rgba(0,0,0,0.55); }
 .mix__play::before {
   content: "";
   width: 0; height: 0;
@@ -63,25 +65,35 @@
   border-bottom: 9px solid transparent;
   margin-left: 3px;
 }
+
+.mix__meta {
+  display: grid;
+  gap: var(--s-2);
+  padding-inline: 2px;
+}
 .mix__title {
+  margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(1.15rem, 2.4vw, 1.85rem);
-  line-height: 1.1;
+  font-size: clamp(0.95rem, 1.35vw, 1.15rem);
+  line-height: 1.2;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   font-variation-settings: "wght" 800, "wdth" 108;
 }
+.mix__title a { color: inherit; text-decoration: none; }
+.mix__title a:hover { background: var(--ink); color: var(--paper); }
 .mix__cta {
-  align-self: start;
+  justify-self: start;
   font-family: var(--font-mono);
-  font-size: var(--t-meta);
+  font-size: var(--t-meta-sm);
   letter-spacing: var(--track-meta);
   text-transform: uppercase;
   border-bottom: 1px solid currentColor;
   padding-bottom: 2px;
+  color: var(--ink);
 }
-.mix:hover .mix__cta { background: var(--paper); color: var(--ink); border-bottom-color: transparent; padding: 2px 6px; }
+.mix__cta:hover { background: var(--ink); color: var(--paper); border-bottom-color: transparent; padding-inline: 4px; }
 
 .mixes__more {
   margin-top: var(--s-12);
@@ -105,26 +117,72 @@
   text-transform: uppercase; padding: var(--s-8) 0;
 }
 
+/* Distinct entrance per card — stagger + varied motion */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .mix {
-      animation: mix-rise linear both;
+    .mix:nth-child(1) .mix__frame {
+      animation: mix-wipe-l linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 55%;
     }
-    .mixes__list > .mix:nth-child(2) { animation-range: entry 6% entry 58%; }
-    .mixes__list > .mix:nth-child(3) { animation-range: entry 12% entry 60%; }
-    .mixes__list > .mix:nth-child(4) { animation-range: entry 16% entry 62%; }
-    .mixes__list > .mix:nth-child(5) { animation-range: entry 20% entry 64%; }
-    .mixes__list > .mix:nth-child(6) { animation-range: entry 24% entry 66%; }
+    .mix:nth-child(2) .mix__frame {
+      animation: mix-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 8% entry 58%;
+    }
+    .mix:nth-child(3) .mix__frame {
+      animation: mix-wipe-r linear both;
+      animation-timeline: view();
+      animation-range: entry 14% entry 60%;
+    }
+    .mix:nth-child(4) .mix__frame {
+      animation: mix-zoom linear both;
+      animation-timeline: view();
+      animation-range: entry 4% entry 55%;
+    }
+    .mix:nth-child(5) .mix__frame {
+      animation: mix-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 58%;
+    }
+    .mix:nth-child(6) .mix__frame {
+      animation: mix-wipe-l linear both;
+      animation-timeline: view();
+      animation-range: entry 16% entry 62%;
+    }
+    .mix__meta {
+      animation: mix-meta linear both;
+      animation-timeline: view();
+      animation-range: entry 15% entry 60%;
+    }
+    .mix:nth-child(even) .mix__meta { animation-range: entry 20% entry 65%; }
+
+    @keyframes mix-wipe-l {
+      from { opacity: 0; clip-path: inset(0 70% 0 0); transform: translateX(-24px); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+    }
+    @keyframes mix-wipe-r {
+      from { opacity: 0; clip-path: inset(0 0 0 70%); transform: translateX(24px); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); transform: none; }
+    }
     @keyframes mix-rise {
-      from { opacity: 0; transform: translateY(40px); clip-path: inset(12% 0 12% 0); }
-      to   { opacity: 1; transform: translateY(0); clip-path: inset(0 0 0 0); }
+      from { opacity: 0; transform: translateY(48px); clip-path: inset(18% 0 0 0); }
+      to   { opacity: 1; transform: none; clip-path: inset(0 0 0 0); }
+    }
+    @keyframes mix-zoom {
+      from { opacity: 0; transform: scale(0.88); filter: blur(4px); }
+      to   { opacity: 1; transform: scale(1); filter: none; }
+    }
+    @keyframes mix-meta {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
     }
   }
 }
 
-@media (max-width: 640px) {
-  .mix { min-height: 14rem; }
-  .mix__body { max-width: 100%; }
+@media (max-width: 900px) {
+  .mixes__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .mixes__grid { grid-template-columns: 1fr; gap: var(--s-8); }
 }
