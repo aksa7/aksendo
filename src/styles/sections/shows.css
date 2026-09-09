@@ -52,15 +52,18 @@
 .show--tonight .show__flag { display: inline-block; }
 .show__flag { display: none; font-family: var(--font-mono); font-size: var(--t-meta-sm); letter-spacing: var(--track-meta); background: var(--paper); color: var(--ink); padding: 1px 6px; margin-left: 0.5em; }
 
-/* festival group */
+/* festival group — inverted heading bar boxes the ADE cluster (v5 Part D) */
 .festival { border-bottom: 1px solid var(--grey-20); }
 .festival__head {
   display: flex; align-items: baseline; gap: 0.6em;
-  padding: var(--s-6) var(--s-2) var(--s-2);
+  padding: var(--s-4) var(--s-3);
+  margin: 0;
   font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
 }
-.festival__head::before { content: "▚"; }
-.festival .show { border-bottom: 1px dotted var(--grey-20); }
+.festival__head::before { content: "▚"; color: var(--paper); }
+.festival .show { border-bottom: 1px dotted var(--grey-20); background: var(--paper); color: var(--ink); }
 .festival .show:last-child { border-bottom: none; }
 
 /* played (collapsed) */
