@@ -65,8 +65,8 @@
       animation-range: entry 10% entry 65%;
     }
     @keyframes cover-unmask {
-      from { clip-path: inset(50% 50% 50% 50%); filter: grayscale(1) contrast(1.8); }
-      to   { clip-path: inset(0 0 0 0); filter: grayscale(1) contrast(1); }
+      from { clip-path: inset(50% 50% 50% 50%); filter: contrast(1.35) saturate(0.85); }
+      to   { clip-path: inset(0 0 0 0); filter: contrast(1) saturate(1); }
     }
     @keyframes release-copy {
       from { opacity: 0; transform: translateX(28px); }

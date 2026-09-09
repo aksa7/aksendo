@@ -100,9 +100,9 @@ console.log('› release covers (design/source/song_artwork/) — equal square c
       console.warn('  ! missing', file, '— skipped');
       continue;
     }
-    // Force identical square outputs for every release (upscale OK so 800px sources match 3000px ones)
+    // Force identical square outputs; keep original colour (not site mono)
     for (const w of [400, 800, 1200]) {
-      const base = sharp(input).grayscale().resize(w, w, { fit: 'cover', position: 'attention' });
+      const base = sharp(input).resize(w, w, { fit: 'cover', position: 'attention' });
       for (const [fmt, opts] of FORMATS) {
         const buf = await base.clone().toFormat(fmt, opts).toBuffer();
         await writeFile(join(OUT, `${name}-${w}.${fmt}`), buf);

@@ -48,16 +48,18 @@
 .hero__wordmark {
   font-family: var(--font-brand);
   font-weight: 900;
-  /* Bernoru Ultra Expanded — size from available width so AKSENDO never clips */
-  font-size: clamp(2.4rem, calc((100vw - 2 * var(--gutter-pad)) / 7.4), 9rem);
+  /* Bernoru Ultra Expanded ≈ ~1.4em/glyph — divide by ~10 so 7 letters fit */
+  font-size: clamp(2rem, calc((100vw - 2 * var(--gutter-pad)) / 10.2), 8.5rem);
   line-height: 0.92;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   text-transform: uppercase;
   color: var(--paper);
   margin: 0;
   max-width: 100%;
-  overflow-wrap: normal;
-  word-break: keep-all;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .hero__role {
   color: var(--paper);
@@ -84,8 +86,26 @@
 
 @media (max-width: 819px) {
   .hero__media img { object-position: center 38%; }
-  .hero__inner { padding-bottom: var(--s-12); }
+  .hero__inner {
+    padding-bottom: var(--s-12);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
   .hero__wordmark {
-    font-size: clamp(2.2rem, calc((100vw - 2 * var(--gutter-pad)) / 7.2), 4.5rem);
+    text-align: center;
+    /* Ultra Expanded: keep well under viewport width */
+    font-size: clamp(1.7rem, 10vw, 2.85rem);
+    letter-spacing: -0.055em;
+    max-width: 100%;
+    padding-inline: 0;
+  }
+  .hero__role { text-align: center; }
+  .hero__next {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
   }
 }
