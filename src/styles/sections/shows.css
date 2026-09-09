@@ -63,7 +63,7 @@
   color: var(--paper);
 }
 .festival__head::before { content: "▚"; color: var(--paper); }
-.festival .show { border-bottom: 1px dotted var(--grey-20); background: var(--paper); color: var(--ink); }
+.festival .show { border-bottom: 1px dotted var(--grey-20); }
 .festival .show:last-child { border-bottom: none; }
 
 /* played (collapsed) */
