@@ -1,26 +1,21 @@
-/* nav.css — persistent top bar: wordmark-return + bookings. */
+/* nav.css — persistent top bar: bookings only (wordmark lives in the hero). */
 .topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 40;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: var(--s-4) var(--gutter-pad);
-  mix-blend-mode: difference;      /* readable over black photo AND paper */
-  color: #fff;                     /* difference of white flips per background */
+  mix-blend-mode: difference;
+  color: #fff;
   pointer-events: none;
 }
 .topbar a, .topbar button { pointer-events: auto; }
 .topbar .mono { color: #fff; }
 
-.topbar__home {
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 1rem;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
+.topbar__home { display: none; } /* removed — duplicated hero wordmark on mobile */
+
 .topbar__right { display: flex; align-items: center; gap: var(--s-6); }
 .topbar__book {
   font-family: var(--font-mono);
@@ -30,5 +25,4 @@
   border-bottom: 1px solid currentColor;
   padding-bottom: 2px;
 }
-/* nav appears after the entry; keep it usable without JS */
 .no-js .topbar, .reduced .topbar { opacity: 1; }

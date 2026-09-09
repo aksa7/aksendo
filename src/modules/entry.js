@@ -42,7 +42,7 @@ export function runEntry({ onReveal } = {}) {
 
   const tl = gsap.timeline({ defaults: { ease: 'cubic-bezier(0.16,1,0.3,1)' } });
   tl.fromTo(word,
-    { letterSpacing: '0.5em', opacity: 0, filter: 'none' },
+    { letterSpacing: '0.35em', opacity: 0, filter: 'none' },
     { letterSpacing: '-0.04em', opacity: 1, duration: 0.9, ease: 'power4.out' }
   )
   .to(word, { yPercent: -6, duration: 0.35 }, '-=0.15')

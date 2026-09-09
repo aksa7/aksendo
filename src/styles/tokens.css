@@ -7,7 +7,8 @@
   --grey-60: #6e6e6e;
   --grey-20: #d8d8d8;
 
-  /* families */
+  /* families — Bernoru for hero/section display; Archivo for editorial bold */
+  --font-brand: "Bernoru", "Archivo", "Archivo Fallback", "Arial Black", system-ui, sans-serif;
   --font-display: "Archivo", "Archivo Fallback", "Arial Narrow", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -32,7 +33,7 @@
   /* variable-font width axis (driven by scroll velocity on desktop) */
   --wdth: 125;
   --wdth-rest: 125;
-  --wdth-fast: 100;
+  --wdth-fast: 118; /* v5 feedback: pulse sideways much less */
 
   /* grid */
   --gutter-pad: clamp(1.25rem, 5vw, 4rem);

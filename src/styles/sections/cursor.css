@@ -1,4 +1,4 @@
-/* cursor.css — one fixed top-left city/time readout for the whole page. */
+/* cursor.css — fixed city/time, clear of the bookings topbar. */
 .cursor-clock {
   position: fixed;
   top: 12px;
@@ -13,16 +13,18 @@
   background: var(--paper);
   pointer-events: none;
   white-space: nowrap;
-  display: none;                  /* enabled by JS on fine-pointer desktop only */
+  display: none;
 }
 body.has-cursor-clock .cursor-clock { display: block; }
 
-/* home-base clock — always KAUNAS (touch / reduced-motion / everyone) */
+/* On the hero (dark photo) the white chip reads as a second logo — hide until scrolled past */
+body.has-cursor-clock.is-hero .cursor-clock { display: none; }
+
 .footer-clock {
   font-family: var(--font-mono); font-size: var(--t-meta-sm);
   letter-spacing: var(--track-meta); text-transform: uppercase; color: var(--grey-60);
 }
 
 @media (max-width: 819px) {
-  .cursor-clock { display: none !important; } /* footer carries the clock on small screens */
+  .cursor-clock { display: none !important; }
 }

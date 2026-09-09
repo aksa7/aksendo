@@ -249,6 +249,7 @@ function head({ title, desc, canonical, extraLD }) {
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-var.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrainsmono-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/otf" href="/fonts/bernoru-blackultraexpanded.otf" crossorigin>
   <link rel="preload" as="image" type="image/avif" fetchpriority="high"
         imagesrcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" imagesizes="100vw">
   <link rel="stylesheet" href="/src/styles/main.css">
@@ -270,7 +271,6 @@ const index = `<!doctype html>
 <div class="entry" hidden aria-hidden="true"><span class="entry__word">AKSENDO</span><span class="entry__skip">Scroll to skip</span></div>
 
 <header class="topbar" data-topbar>
-  <a class="topbar__home" href="#top">AKSENDO</a>
   <nav class="topbar__right" aria-label="Primary">
     <a class="topbar__book" href="mailto:${site.booking}">BOOKINGS</a>
   </nav>
@@ -294,7 +294,6 @@ const index = `<!doctype html>
   <section class="section cv-auto" id="shows" aria-labelledby="shows-h">
     <div class="wrap grid">
       <h2 class="section-head" id="shows-h">Shows</h2>
-      ${margin('R', 'streams', `<b>${picoStreams}</b> · PICO DE AMOR`)}
       ${showsHtml}
       ${playedHtml}
       <div class="appearances"><span class="lead mono">Selected appearances</span>${esc(appearances)}
@@ -306,6 +305,7 @@ const index = `<!doctype html>
   <section class="section section--warm cv-auto" id="music" aria-labelledby="music-h">
     <div class="wrap grid">
       <h2 class="section-head" id="music-h">Music</h2>
+      ${picoStreams ? margin('R', 'streams', `<b>${picoStreams}</b> · PICO DE AMOR`) : ''}
       ${musicHtml}
       ${margin('L', 'zamna', 'HEARD AT ZAMNA TULUM')}
       ${margin('R', 'road', 'WRITTEN ON THE ROAD, BERLIN → AMSTERDAM')}

@@ -1,12 +1,13 @@
-// type.js — reactive variable width: headings compress with scroll velocity,
-// relax back to wide at rest. Lerped, applied only to elements in view.
+// type.js — subtle reactive width on Archivo display type only.
+// Bernoru (brand) has no wdth axis — skipped. Amplitude kept tiny (v5 feedback).
 import { bus } from './bus.js';
 
 export function initReactiveType() {
-  const els = [...document.querySelectorAll('[data-wordmark], .section-head, .contact-mail, .contact__book, .pull')];
+  // Only Archivo elements that still expose wdth — not Bernoru brand faces.
+  const els = [...document.querySelectorAll('.show__venue')];
   if (!els.length) return;
 
-  const REST = 125, FAST = 100;
+  const REST = 112, FAST = 108; // was 125→100 — barely perceptible now
   let current = REST;
   let visible = new Set();
 
@@ -16,12 +17,11 @@ export function initReactiveType() {
   els.forEach((el) => io.observe(el));
 
   function frame() {
-    const target = REST - (REST - FAST) * bus.velocity;
-    current += (target - current) * 0.12;
+    const target = REST - (REST - FAST) * Math.min(bus.velocity, 1);
+    current += (target - current) * 0.08;
     const v = current.toFixed(1);
     visible.forEach((el) => {
-      const light = el.classList.contains('pull') || el.classList.contains('contact__book') || el.classList.contains('contact-mail');
-      el.style.fontVariationSettings = `"wght" ${light ? 800 : 900}, "wdth" ${v}`;
+      el.style.fontVariationSettings = `"wght" 800, "wdth" ${v}`;
     });
     requestAnimationFrame(frame);
   }

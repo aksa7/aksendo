@@ -23,7 +23,7 @@
     @keyframes show-deal {
       from {
         opacity: 0;
-        transform: perspective(720px) rotateX(42deg) translateY(36px);
+        transform: perspective(720px) rotateX(18deg) translateY(20px);
       }
       to {
         opacity: 1;
@@ -95,13 +95,11 @@
     @keyframes head-punch {
       from {
         opacity: 0;
-        transform: translateY(28px);
-        letter-spacing: 0.18em;
+        transform: translateY(16px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
-        letter-spacing: var(--track-head, -0.03em);
       }
     }
 

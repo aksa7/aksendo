@@ -9,14 +9,13 @@
 }
 .entry[hidden] { display: none; }
 .entry__word {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-weight: 900;
   font-size: var(--t-wordmark);
   line-height: 1;
   color: var(--paper);
   text-transform: uppercase;
-  letter-spacing: 0.5em;                 /* opens wide, closes to -0.04em */
-  font-variation-settings: "wght" 900, "wdth" 118;
+  letter-spacing: 0.35em;
   white-space: nowrap;
   will-change: letter-spacing, transform;
 }

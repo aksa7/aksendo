@@ -4,17 +4,31 @@
 .contact__book {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(1.75rem, 7vw, 5rem);
-  line-height: 1;
+  /* sized so BOOKINGS@AKSENDO.COM fits one line from ~320px up */
+  font-size: clamp(1.05rem, 5.2vw, 4.75rem);
+  line-height: 1.05;
   letter-spacing: -0.03em;
   text-transform: uppercase;
-  font-variation-settings: "wght" 800, "wdth" 112;
+  font-variation-settings: "wght" 800, "wdth" 100;
   display: inline-block;
   max-width: 100%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.06em 0.1em;
+  overflow: visible;
 }
-.contact-mail__part { white-space: nowrap; }
+.contact-mail__part { white-space: nowrap; display: inline; }
 .contact-mail:hover,
-.contact__book:hover { background: var(--ink); color: var(--paper); }
+.contact__book:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+@media (max-width: 419px) {
+  /* force a clean two-line stack only when one line truly can't fit */
+  .contact-mail { display: flex; flex-direction: column; align-items: flex-start; }
+  .contact-mail__part { display: block; }
+}
 
 .contact__row { margin-top: var(--s-8); display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); }
 .contact__row a {

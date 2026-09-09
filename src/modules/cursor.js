@@ -1,6 +1,7 @@
 // cursor.js — fixed top-left city/time readout.
 // One instance, never follows the pointer. City tracks the next upcoming show
 // relative to scroll (show nearest viewport middle), then holds its last value.
+// Hidden while the hero is dominant so it doesn't read as branding next to AKSENDO.
 import { nextShow, cityTime, partition } from './clock.js';
 
 export function initCursorClock() {
@@ -30,4 +31,17 @@ export function initCursorClock() {
   const tick = () => { el.textContent = `${city.toUpperCase()}  ${cityTime(city)}`; };
   tick();
   setInterval(tick, 1000);
+
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    const heroIo = new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        document.body.classList.toggle('is-hero', en.isIntersecting && en.intersectionRatio > 0.35);
+      }
+    }, { threshold: [0, 0.35, 0.7] });
+    heroIo.observe(hero);
+    if (hero.getBoundingClientRect().bottom > window.innerHeight * 0.35) {
+      document.body.classList.add('is-hero');
+    }
+  }
 }

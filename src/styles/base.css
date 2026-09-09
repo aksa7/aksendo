@@ -24,6 +24,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "Bernoru";
+  src: url("/fonts/bernoru-blackultraexpanded.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 /* metric-matched fallbacks — kill layout shift on font swap */
 @font-face {
   font-family: "Archivo Fallback";
@@ -103,16 +110,15 @@ ul { list-style: none; padding: 0; }
   font-variation-settings: "wght" 900, "wdth" var(--wdth);
 }
 
-/* section head: italic black with a leading slash rule */
+/* section head: Bernoru display with a leading slash rule */
 .section-head {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-weight: 900;
-  font-style: italic;
+  font-style: normal;
   font-size: var(--t-display);
   line-height: 1;
   letter-spacing: -0.02em;
   text-transform: uppercase;
-  font-variation-settings: "wght" 900, "wdth" var(--wdth);
   margin-bottom: var(--s-12);
   display: flex;
   align-items: baseline;
