@@ -59,7 +59,7 @@ function showRow(s, { dotted = false } = {}) {
   const tonight = isToday(s.date);
   const meta = [];
   meta.push(`<span class="mono mono--dim">${esc(s.country)}</span>`);
-  if (s.with) meta.push(`<span class="mono mono--dim">WITH ${esc(s.with).toUpperCase()}</span>`);
+  if (s.billing) meta.push(`<span class="mono mono--dim">${esc(s.billing)}</span>`);
   const tickets = s.tickets
     ? `<span class="show__tickets mono"><a href="${attr(s.tickets)}" target="_blank" rel="noopener">TICKETS ↗</a></span>`
     : `<span class="show__tickets mono mono--dim">—</span>`;
