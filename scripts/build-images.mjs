@@ -48,9 +48,10 @@ async function fromSvg(svg, name, size, formats = FORMATS) {
 }
 
 console.log('› photography');
-// hero — IMG_4044.jpg (3264×2448, ~4:3). Full-bleed cover; attention keeps the DJ centred
-// for both landscape (16:9 desktop) and taller mobile crops (≈4:5 via object-fit).
+// hero desktop — live booth (IMG_4044), landscape-friendly full-bleed cover
 await responsive('IMG_4044.jpg', 'hero', [640, 960, 1600, 2560], { fit: 'cover' });
+// hero mobile — aksendo.jpg (portrait) fills the phone without letterboxing
+await responsive('aksendo.jpg', 'hero-m', [480, 750, 1080, 1440], { fit: 'cover' });
 // bio / press live shots
 await responsive('portrait-dj-river_660x1275.jpg', 'portrait', [480, 660], { fit: 'cover' });
 await responsive('live-decksandstories_1241x931.jpg', 'live', [640, 1000, 1241], { fit: 'cover' });
@@ -85,31 +86,30 @@ console.log('› show artwork (design/source/shows/)');
   }
 }
 
-console.log('› placeholder release covers (monochrome, no baked text)');
-// abstract monochrome placeholders — the real title is HTML text on the card.
-const covers = {
-  'cover-pico-de-amor': `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#000"/>${
-    Array.from({ length: 14 }, (_, i) => `<rect x="${-200 + i * 130}" y="-200" width="60" height="2200" fill="#fff" transform="rotate(24 750 750)"/>`).join('')
-  }</svg>`,
-  'cover-berlin-to-ade': `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#fff"/>${
-    Array.from({ length: 9 }, (_, i) => `<circle cx="750" cy="1500" r="${180 + i * 165}" fill="none" stroke="#000" stroke-width="26"/>`).join('')
-  }</svg>`,
-  'cover-temporary-miracle': (() => {
-    let dots = ''; const g = 20;
-    for (let y = 0; y < g; y++) for (let x = 0; x < g; x++) {
-      const r = 4 + (y / g) * 30; dots += `<circle cx="${37 + x * 75}" cy="${37 + y * 75}" r="${r}" fill="#000"/>`;
+console.log('› release covers (design/source/song_artwork/) — equal square crops');
+{
+  const ART = join(SRC, 'song_artwork');
+  const map = [
+    ['pico_de_amor.jpg', 'cover-pico-de-amor'],
+    ['berlin_to_ade.jpg', 'cover-berlin-to-ade'],
+    ['temporary_miracle.jpg', 'cover-temporary-miracle']
+  ];
+  for (const [file, name] of map) {
+    const input = join(ART, file);
+    if (!existsSync(input)) {
+      console.warn('  ! missing', file, '— skipped');
+      continue;
     }
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#fff"/>${dots}</svg>`;
-  })()
-};
-for (const [name, svg] of Object.entries(covers)) {
-  await mkdir(OUT, { recursive: true });
-  const base = sharp(Buffer.from(svg));
-  for (const w of [400, 800, 1200]) for (const [fmt, opts] of FORMATS) {
-    const buf = await base.clone().resize(w, w).toFormat(fmt, opts).toBuffer();
-    await writeFile(join(OUT, `${name}-${w}.${fmt}`), buf);
+    // Force identical square outputs for every release (upscale OK so 800px sources match 3000px ones)
+    for (const w of [400, 800, 1200]) {
+      const base = sharp(input).grayscale().resize(w, w, { fit: 'cover', position: 'attention' });
+      for (const [fmt, opts] of FORMATS) {
+        const buf = await base.clone().toFormat(fmt, opts).toBuffer();
+        await writeFile(join(OUT, `${name}-${w}.${fmt}`), buf);
+      }
+    }
+    console.log('  ✓', name);
   }
-  console.log('  ✓', name);
 }
 
 console.log('› OG image 1200x630');

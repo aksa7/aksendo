@@ -24,7 +24,8 @@
   <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrainsmono-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/otf" href="/fonts/bernoru-blackultraexpanded.otf" crossorigin>
   <link rel="preload" as="image" type="image/avif" fetchpriority="high"
-        imagesrcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" imagesizes="100vw">
+        imagesrcset="/img/gen/hero-m-480.avif 480w, /img/gen/hero-m-750.avif 750w, /img/gen/hero-m-1080.avif 1080w, /img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w"
+        imagesizes="100vw">
   <link rel="stylesheet" href="/src/styles/main.css">
   <script type="application/ld+json">[{"@context":"https://schema.org","@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com","genre":["HOUSE","TECH HOUSE","INDIE DANCE","AFRO HOUSE","MELODIC"],"sameAs":["https://www.instagram.com/aksendo.official/","https://open.spotify.com/artist/7rid0uxd12Ead2r2OxCk5r","https://soundcloud.com/aksendo","https://www.youtube.com/@aksendo.official","https://linktr.ee/aksendo"],"location":{"@type":"Place","name":"Kaunas, Lithuania"},"contactPoint":{"@type":"ContactPoint","contactType":"booking","email":"bookings@aksendo.com"}},{"@context":"https://schema.org","@type":"MusicEvent","name":"AKSENDO — Corner Café, Vilnius","startDate":"2026-09-18","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Corner Café, Vilnius","address":{"@type":"PostalAddress","addressLocality":"Vilnius","addressCountry":"LT"}},"performer":{"@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com"}},{"@context":"https://schema.org","@type":"MusicEvent","name":"AKSENDO — Dancing Street, TBC","startDate":"2026-09-19","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Dancing Street, TBC","address":{"@type":"PostalAddress","addressLocality":"TBC","addressCountry":"LT"}},"performer":{"@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com"}},{"@context":"https://schema.org","@type":"MusicEvent","name":"AKSENDO — Bulbul Berlin, Berlin","startDate":"2026-10-15","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Bulbul Berlin, Berlin","address":{"@type":"PostalAddress","addressLocality":"Berlin","addressCountry":"DE"}},"performer":{"@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com"}},{"@context":"https://schema.org","@type":"MusicEvent","name":"AKSENDO · ADE 2026 — Zu Hause, Amsterdam","startDate":"2026-10-22","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"Zu Hause, Amsterdam","address":{"@type":"PostalAddress","addressLocality":"Amsterdam","addressCountry":"NL"}},"performer":{"@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com"}},{"@context":"https://schema.org","@type":"MusicEvent","name":"AKSENDO · ADE 2026 — ADE Network Hub, Amsterdam","startDate":"2026-10-22","eventStatus":"https://schema.org/EventScheduled","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","location":{"@type":"Place","name":"ADE Network Hub, Amsterdam","address":{"@type":"PostalAddress","addressLocality":"Amsterdam","addressCountry":"NL"}},"performer":{"@type":"MusicGroup","name":"AKSENDO","url":"https://aksendo.com"}}]</script>
 </head>
@@ -40,17 +41,26 @@
 </header>
 
 <div class="grain" aria-hidden="true"></div>
-<div class="cursor-clock" data-cursor-clock aria-hidden="true"></div>
 
 <main id="main">
   <section class="hero" id="top" aria-label="Intro">
     <div class="hero__media" data-develop>
       <picture>
+  <source media="(max-width: 819px)" type="image/avif"
+          srcset="/img/gen/hero-m-480.avif 480w, /img/gen/hero-m-750.avif 750w, /img/gen/hero-m-1080.avif 1080w, /img/gen/hero-m-1440.avif 1440w"
+          sizes="100vw">
+  <source media="(max-width: 819px)" type="image/webp"
+          srcset="/img/gen/hero-m-480.webp 480w, /img/gen/hero-m-750.webp 750w, /img/gen/hero-m-1080.webp 1080w, /img/gen/hero-m-1440.webp 1440w"
+          sizes="100vw">
+  <source media="(max-width: 819px)" type="image/jpeg"
+          srcset="/img/gen/hero-m-480.jpeg 480w, /img/gen/hero-m-750.jpeg 750w, /img/gen/hero-m-1080.jpeg 1080w, /img/gen/hero-m-1440.jpeg 1440w"
+          sizes="100vw">
   <source type="image/avif" srcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" sizes="100vw">
   <source type="image/webp" srcset="/img/gen/hero-640.webp 640w, /img/gen/hero-960.webp 960w, /img/gen/hero-1600.webp 1600w, /img/gen/hero-2560.webp 2560w" sizes="100vw">
   <img src="/img/gen/hero-2560.jpeg" srcset="/img/gen/hero-640.jpeg 640w, /img/gen/hero-960.jpeg 960w, /img/gen/hero-1600.jpeg 1600w, /img/gen/hero-2560.jpeg 2560w" sizes="100vw"
-       width="2560" height="1920" alt="Aksendo from behind at the decks, fist raised, Decks &amp; Stories shirt — live press portrait."
-       fetchpriority="high" decoding="async"></picture>
+       width="2560" height="1920" alt="Aksendo from behind at the decks, fist raised, Decks & Stories shirt — live press portrait."
+       fetchpriority="high" decoding="async">
+</picture>
     </div>
     <div class="hero__inner">
       <h1 class="hero__wordmark" data-wordmark>AKSENDO</h1>
@@ -116,10 +126,10 @@
       <aside class="margin margin--R" data-margin="streams" data-side="R"><b>330,000 STREAMS</b> · PICO DE AMOR</aside>
       <article class="release" id="release-pico-de-amor">
     <div class="release__cover"><picture>
-  <source type="image/avif" srcset="/img/gen/cover-pico-de-amor-400.avif 400w, /img/gen/cover-pico-de-amor-800.avif 800w" sizes="(max-width:640px) 88px, 120px">
-  <source type="image/webp" srcset="/img/gen/cover-pico-de-amor-400.webp 400w, /img/gen/cover-pico-de-amor-800.webp 800w" sizes="(max-width:640px) 88px, 120px">
-  <img src="/img/gen/cover-pico-de-amor-800.jpeg" srcset="/img/gen/cover-pico-de-amor-400.jpeg 400w, /img/gen/cover-pico-de-amor-800.jpeg 800w" sizes="(max-width:640px) 88px, 120px"
-       width="1200" height="1200" alt="Pico De Amor — cover art (placeholder)"
+  <source type="image/avif" srcset="/img/gen/cover-pico-de-amor-400.avif 400w, /img/gen/cover-pico-de-amor-800.avif 800w, /img/gen/cover-pico-de-amor-1200.avif 1200w" sizes="(max-width:640px) 88px, 120px">
+  <source type="image/webp" srcset="/img/gen/cover-pico-de-amor-400.webp 400w, /img/gen/cover-pico-de-amor-800.webp 800w, /img/gen/cover-pico-de-amor-1200.webp 1200w" sizes="(max-width:640px) 88px, 120px">
+  <img src="/img/gen/cover-pico-de-amor-1200.jpeg" srcset="/img/gen/cover-pico-de-amor-400.jpeg 400w, /img/gen/cover-pico-de-amor-800.jpeg 800w, /img/gen/cover-pico-de-amor-1200.jpeg 1200w" sizes="(max-width:640px) 88px, 120px"
+       width="1200" height="1200" alt="Pico De Amor — cover art"
        loading="lazy" decoding="async"></picture></div>
     <div class="release__body">
       <h3 class="release__title">Pico De Amor</h3>
@@ -130,10 +140,10 @@
     </div>
   </article><article class="release" id="release-berlin-to-ade">
     <div class="release__cover"><picture>
-  <source type="image/avif" srcset="/img/gen/cover-berlin-to-ade-400.avif 400w, /img/gen/cover-berlin-to-ade-800.avif 800w" sizes="(max-width:640px) 88px, 120px">
-  <source type="image/webp" srcset="/img/gen/cover-berlin-to-ade-400.webp 400w, /img/gen/cover-berlin-to-ade-800.webp 800w" sizes="(max-width:640px) 88px, 120px">
-  <img src="/img/gen/cover-berlin-to-ade-800.jpeg" srcset="/img/gen/cover-berlin-to-ade-400.jpeg 400w, /img/gen/cover-berlin-to-ade-800.jpeg 800w" sizes="(max-width:640px) 88px, 120px"
-       width="1200" height="1200" alt="Berlin To ADE — cover art (placeholder)"
+  <source type="image/avif" srcset="/img/gen/cover-berlin-to-ade-400.avif 400w, /img/gen/cover-berlin-to-ade-800.avif 800w, /img/gen/cover-berlin-to-ade-1200.avif 1200w" sizes="(max-width:640px) 88px, 120px">
+  <source type="image/webp" srcset="/img/gen/cover-berlin-to-ade-400.webp 400w, /img/gen/cover-berlin-to-ade-800.webp 800w, /img/gen/cover-berlin-to-ade-1200.webp 1200w" sizes="(max-width:640px) 88px, 120px">
+  <img src="/img/gen/cover-berlin-to-ade-1200.jpeg" srcset="/img/gen/cover-berlin-to-ade-400.jpeg 400w, /img/gen/cover-berlin-to-ade-800.jpeg 800w, /img/gen/cover-berlin-to-ade-1200.jpeg 1200w" sizes="(max-width:640px) 88px, 120px"
+       width="1200" height="1200" alt="Berlin To ADE — cover art"
        loading="lazy" decoding="async"></picture></div>
     <div class="release__body">
       <h3 class="release__title">Berlin To ADE</h3>
@@ -144,10 +154,10 @@
     </div>
   </article><article class="release" id="release-temporary-miracle">
     <div class="release__cover"><picture>
-  <source type="image/avif" srcset="/img/gen/cover-temporary-miracle-400.avif 400w, /img/gen/cover-temporary-miracle-800.avif 800w" sizes="(max-width:640px) 88px, 120px">
-  <source type="image/webp" srcset="/img/gen/cover-temporary-miracle-400.webp 400w, /img/gen/cover-temporary-miracle-800.webp 800w" sizes="(max-width:640px) 88px, 120px">
-  <img src="/img/gen/cover-temporary-miracle-800.jpeg" srcset="/img/gen/cover-temporary-miracle-400.jpeg 400w, /img/gen/cover-temporary-miracle-800.jpeg 800w" sizes="(max-width:640px) 88px, 120px"
-       width="1200" height="1200" alt="Temporary Miracle — cover art (placeholder)"
+  <source type="image/avif" srcset="/img/gen/cover-temporary-miracle-400.avif 400w, /img/gen/cover-temporary-miracle-800.avif 800w, /img/gen/cover-temporary-miracle-1200.avif 1200w" sizes="(max-width:640px) 88px, 120px">
+  <source type="image/webp" srcset="/img/gen/cover-temporary-miracle-400.webp 400w, /img/gen/cover-temporary-miracle-800.webp 800w, /img/gen/cover-temporary-miracle-1200.webp 1200w" sizes="(max-width:640px) 88px, 120px">
+  <img src="/img/gen/cover-temporary-miracle-1200.jpeg" srcset="/img/gen/cover-temporary-miracle-400.jpeg 400w, /img/gen/cover-temporary-miracle-800.jpeg 800w, /img/gen/cover-temporary-miracle-1200.jpeg 1200w" sizes="(max-width:640px) 88px, 120px"
+       width="1200" height="1200" alt="Temporary Miracle — cover art"
        loading="lazy" decoding="async"></picture></div>
     <div class="release__body">
       <h3 class="release__title">Temporary Miracle</h3>

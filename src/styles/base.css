@@ -115,14 +115,17 @@ ul { list-style: none; padding: 0; }
   font-family: var(--font-brand);
   font-weight: 900;
   font-style: normal;
-  font-size: var(--t-display);
+  font-size: clamp(1.45rem, calc((100vw - 2 * var(--gutter-pad) - 1.5rem) / 11), 4.25rem);
   line-height: 1;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
   margin-bottom: var(--s-12);
   display: flex;
   align-items: baseline;
-  gap: 0.4em;
+  gap: 0.35em;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .section-head::before {
   content: "/";
@@ -138,6 +141,8 @@ ul { list-style: none; padding: 0; }
   max-width: var(--maxw);
   margin-inline: auto;
   padding-inline: var(--gutter-pad);
+  min-width: 0;
+  overflow-x: clip;
 }
 .grid {
   display: grid;

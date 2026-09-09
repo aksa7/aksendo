@@ -167,8 +167,8 @@ function releaseCard(r) {
   }
   const cred = r._cred ? `<div class="release__cred mono mono--dim">${esc(r._cred)}</div>` : '';
   const cover = pic({
-    name: `cover-${r.id}`, widths: [400, 800], sizes: '(max-width:640px) 88px, 120px',
-    alt: `${r.title} — cover art (placeholder)`, w: 1200, h: 1200, cls: ''
+    name: `cover-${r.id}`, widths: [400, 800, 1200], sizes: '(max-width:640px) 88px, 120px',
+    alt: `${r.title} — cover art`, w: 1200, h: 1200, cls: ''
   });
   return `<article class="release" id="release-${r.id}">
     <div class="release__cover">${cover}</div>
@@ -251,7 +251,8 @@ function head({ title, desc, canonical, extraLD }) {
   <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrainsmono-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/otf" href="/fonts/bernoru-blackultraexpanded.otf" crossorigin>
   <link rel="preload" as="image" type="image/avif" fetchpriority="high"
-        imagesrcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" imagesizes="100vw">
+        imagesrcset="/img/gen/hero-m-480.avif 480w, /img/gen/hero-m-750.avif 750w, /img/gen/hero-m-1080.avif 1080w, /img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w"
+        imagesizes="100vw">
   <link rel="stylesheet" href="/src/styles/main.css">
   ${extraLD ? `<script type="application/ld+json">${JSON.stringify(extraLD)}</script>` : ''}`;
 }
@@ -277,12 +278,26 @@ const index = `<!doctype html>
 </header>
 
 <div class="grain" aria-hidden="true"></div>
-<div class="cursor-clock" data-cursor-clock aria-hidden="true"></div>
 
 <main id="main">
   <section class="hero" id="top" aria-label="Intro">
     <div class="hero__media" data-develop>
-      ${pic({ name: 'hero', widths: [640, 960, 1600, 2560], sizes: '100vw', alt: 'Aksendo from behind at the decks, fist raised, Decks & Stories shirt — live press portrait.', w: 2560, h: 1920, priority: true, lazy: false })}
+      <picture>
+  <source media="(max-width: 819px)" type="image/avif"
+          srcset="/img/gen/hero-m-480.avif 480w, /img/gen/hero-m-750.avif 750w, /img/gen/hero-m-1080.avif 1080w, /img/gen/hero-m-1440.avif 1440w"
+          sizes="100vw">
+  <source media="(max-width: 819px)" type="image/webp"
+          srcset="/img/gen/hero-m-480.webp 480w, /img/gen/hero-m-750.webp 750w, /img/gen/hero-m-1080.webp 1080w, /img/gen/hero-m-1440.webp 1440w"
+          sizes="100vw">
+  <source media="(max-width: 819px)" type="image/jpeg"
+          srcset="/img/gen/hero-m-480.jpeg 480w, /img/gen/hero-m-750.jpeg 750w, /img/gen/hero-m-1080.jpeg 1080w, /img/gen/hero-m-1440.jpeg 1440w"
+          sizes="100vw">
+  <source type="image/avif" srcset="/img/gen/hero-640.avif 640w, /img/gen/hero-960.avif 960w, /img/gen/hero-1600.avif 1600w, /img/gen/hero-2560.avif 2560w" sizes="100vw">
+  <source type="image/webp" srcset="/img/gen/hero-640.webp 640w, /img/gen/hero-960.webp 960w, /img/gen/hero-1600.webp 1600w, /img/gen/hero-2560.webp 2560w" sizes="100vw">
+  <img src="/img/gen/hero-2560.jpeg" srcset="/img/gen/hero-640.jpeg 640w, /img/gen/hero-960.jpeg 960w, /img/gen/hero-1600.jpeg 1600w, /img/gen/hero-2560.jpeg 2560w" sizes="100vw"
+       width="2560" height="1920" alt="Aksendo from behind at the decks, fist raised, Decks & Stories shirt — live press portrait."
+       fetchpriority="high" decoding="async">
+</picture>
     </div>
     <div class="hero__inner">
       <h1 class="hero__wordmark" data-wordmark>AKSENDO</h1>

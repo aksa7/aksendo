@@ -1,4 +1,5 @@
-/* hero.css — full-bleed developing photo + wordmark + next show. */
+/* hero.css — full-bleed developing photo + wordmark + next show.
+   Desktop: booth landscape (cover). Mobile: aksendo.jpg portrait (cover, no letterbox). */
 .hero {
   position: relative;
   min-height: 100svh;
@@ -12,27 +13,22 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  display: grid;
-  place-items: center;
   background: var(--ink);
 }
 .hero__media picture {
-  position: relative;
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  max-width: 100%;
-  max-height: 100%;
 }
 .hero__media img {
   width: 100%;
   height: 100%;
-  /* contain = full frame visible (no stretch / no cropped shirt); letterbox on --ink */
-  object-fit: contain;
-  object-position: center center;
+  object-fit: cover;
+  object-position: center 42%;
   filter: grayscale(1);
 }
-/* legibility scrim under the wordmark */
 .hero__media::after {
   content: "";
   position: absolute;
@@ -47,16 +43,21 @@
   margin-inline: auto;
   padding: var(--gutter-pad);
   padding-bottom: var(--s-16);
+  min-width: 0;
 }
 .hero__wordmark {
   font-family: var(--font-brand);
   font-weight: 900;
-  font-size: var(--t-wordmark);
-  line-height: 0.9;
-  letter-spacing: var(--track-wordmark);
+  /* Bernoru Ultra Expanded — size from available width so AKSENDO never clips */
+  font-size: clamp(2.4rem, calc((100vw - 2 * var(--gutter-pad)) / 7.4), 9rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
   color: var(--paper);
   margin: 0;
+  max-width: 100%;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 .hero__role {
   color: var(--paper);
@@ -82,6 +83,9 @@
 .hero__next .arrow { transition: transform var(--dur-hover) ease; }
 
 @media (max-width: 819px) {
-  .hero__media img { object-fit: contain; object-position: center center; }
+  .hero__media img { object-position: center 38%; }
   .hero__inner { padding-bottom: var(--s-12); }
+  .hero__wordmark {
+    font-size: clamp(2.2rem, calc((100vw - 2 * var(--gutter-pad)) / 7.2), 4.5rem);
+  }
 }

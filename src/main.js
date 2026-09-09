@@ -1,7 +1,7 @@
 // main.js — progressive enhancement entry point.
 // Baseline (this file only) is tiny and runs everywhere. Heavy motion libraries
 // (GSAP, OGL) are dynamically imported only on capable desktops.
-import { reducedMotion, isDesktop, finePointer, weakDevice, hasWebGL2 } from './modules/capabilities.js';
+import { reducedMotion, isDesktop, weakDevice, hasWebGL2 } from './modules/capabilities.js';
 import { initForm } from './modules/form.js';
 import { initMixes } from './modules/embeds.js';
 import { initClockFallback } from './modules/clock.js';
@@ -44,8 +44,7 @@ async function bootDesktop() {
   initMarginaliaDesktop();
   import('./modules/flip.js').then((m) => m.initFlip());
 
-  // cursor clock — fine pointer only
-  if (finePointer()) import('./modules/cursor.js').then((m) => m.initCursorClock());
+  // cursor clock removed — was colliding with branding / confusing as "Amsterdam" label
 
   // developing hero + show artwork + entry, guarded by hardware
   let hero = null;
