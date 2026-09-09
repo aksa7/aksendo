@@ -5,6 +5,7 @@ import { reducedMotion, isDesktop, weakDevice, hasWebGL2 } from './modules/capab
 import { initForm } from './modules/form.js';
 import { initMixes } from './modules/embeds.js';
 import { initClockFallback } from './modules/clock.js';
+import { initEvolvingLine } from './modules/evolving.js';
 
 const html = document.documentElement;
 html.classList.remove('no-js');
@@ -16,6 +17,7 @@ document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = Strin
 initForm();
 initMixes();
 initClockFallback();
+initEvolvingLine();
 
 const reduced = reducedMotion();
 if (reduced) html.classList.add('reduced');

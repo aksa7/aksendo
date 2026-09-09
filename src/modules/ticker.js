@@ -6,7 +6,7 @@ export function initTicker() {
   if (!ticker || !notes.length) return;
 
   // streams lives under Music only — not Shows
-  const bySection = { music: 'streams', mixes: 'road', bio: 'kaunas', contact: 'appearances' };
+  const bySection = { music: 'streams', mixes: 'road', bio: 'kaunas', contact: 'live' };
   const textOf = (id) => {
     const n = notes.find((x) => x.dataset.margin === id);
     return n ? n.innerHTML : '';

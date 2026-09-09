@@ -84,14 +84,61 @@
 }
 .shows__empty a { border-bottom: 1px solid currentColor; }
 
-/* selected appearances — one dense mono block */
+/* selected appearances — film-credit stack */
 .appearances {
   margin-top: var(--s-16);
-  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta);
-  text-transform: uppercase; line-height: 2; color: var(--grey-60);
-  max-width: 70ch;
+  padding-top: var(--s-8);
+  border-top: 1px solid var(--ink);
+  max-width: 42ch;
 }
-.appearances .lead { color: var(--ink); display: block; margin-bottom: var(--s-3); }
+.appearances .lead {
+  color: var(--ink);
+  display: block;
+  margin-bottom: var(--s-6);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: var(--track-meta);
+  text-transform: uppercase;
+}
+.appearances__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55em;
+}
+.appearances__list li {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grey-60);
+  line-height: 1.35;
+  padding-left: 0.9em;
+  border-left: 1px solid var(--grey-20);
+  transition: color var(--dur-hover) linear, border-color var(--dur-hover) linear, transform var(--dur-hover) ease;
+}
+.appearances__list li:hover {
+  color: var(--ink);
+  border-left-color: var(--ink);
+  transform: translateX(4px);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .appearances__list li {
+      animation: credit-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    .appearances__list li:nth-child(odd) { animation-range: entry 4% entry 44%; }
+    .appearances__list li:nth-child(3n) { animation-range: entry 8% entry 48%; }
+    @keyframes credit-in {
+      from { opacity: 0; transform: translateX(-16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+  }
+}
 
 @media (max-width: 640px) {
   .show { grid-template-columns: 1fr; gap: var(--s-1); }

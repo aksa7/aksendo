@@ -16,6 +16,8 @@ const site = await j('site.json');
 const links = await j('links.json');
 const shows = await j('shows.json');
 const releases = await j('releases.json');
+let mixes = [];
+try { mixes = await j('mixes.json'); } catch { mixes = []; }
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const attr = (s = '') => esc(s).replace(/'/g, '&#39;');
@@ -127,7 +129,10 @@ function renderShows(list) {
       let k = i + 1;
       while (k < list.length && list[k].festival === s.festival) { group.push(list[k]); k++; }
       const cities = [...new Set(group.map((g) => g.city.toUpperCase()))].join(' · ');
-      out.push(`<div class="festival"><div class="festival__head">${esc(s.festival).toUpperCase()} · ${cities}</div>${group.map((g) => showRow(g, { dotted: true })).join('')}</div>`);
+      const headLabel = s.festival.toUpperCase() === 'PRIVATE'
+        ? 'PRIVATE'
+        : `${esc(s.festival).toUpperCase()} · ${cities}`;
+      out.push(`<div class="festival"><div class="festival__head">${headLabel}</div>${group.map((g) => showRow(g, { dotted: true })).join('')}</div>`);
       i = k;
     } else {
       out.push(showRow(s));
@@ -183,18 +188,43 @@ function releaseCard(r) {
 }
 const musicHtml = releases.map(releaseCard).join('');
 
-/* ---------- mixes (facades) ---------- */
-const yt = links.artist.youtube;
-const mixes = [
-  { name: 'mix-1', label: 'YOUTUBE — SET', href: yt },
-  { name: 'mix-2', label: 'YOUTUBE — LIVE', href: yt },
-  { name: 'mix-3', label: 'YOUTUBE — MIX', href: yt }
-];
-const mixesHtml = mixes.map((m) => `<a class="mix" href="${attr(m.href)}" target="_blank" rel="noopener" data-mix aria-label="${attr(m.label)} — opens on YouTube">
-  ${pic({ name: m.name, widths: [480, 800], sizes: '(max-width:819px) 100vw, 33vw', alt: m.label, w: 800, h: 450 })}
-  <span class="mix__play" aria-hidden="true"></span>
-  <span class="mix__label">${esc(m.label)}</span>
-</a>`).join('');
+/* ---------- mixes (YouTube banners) ---------- */
+const ytChannel = links.artist.youtube;
+function mixCard(m) {
+  const thumb = m.thumb || m.thumbFallback || '';
+  const fallback = m.thumbFallback || thumb;
+  return `<a class="mix" href="${attr(m.url)}" target="_blank" rel="noopener" data-mix data-video="${attr(m.id)}" aria-label="${attr(m.title)} — Watch mix on YouTube">
+  <span class="mix__media" aria-hidden="true">
+    <img src="${attr(thumb)}" alt="" width="1280" height="720" loading="lazy" decoding="async"
+         onerror="this.onerror=null;this.src='${attr(fallback)}'">
+  </span>
+  <span class="mix__body">
+    <span class="mix__play" aria-hidden="true"></span>
+    <span class="mix__title">${esc(m.title)}</span>
+    <span class="mix__cta">Watch mix ↗</span>
+  </span>
+</a>`;
+}
+const mixesHtml = mixes.length
+  ? `<div class="mixes__list">${mixes.map(mixCard).join('')}</div>
+      <div class="mixes__more"><a href="${attr(ytChannel)}" target="_blank" rel="noopener">Watch more mixes ↗</a></div>`
+  : `<p class="mixes__empty">Mixes on YouTube — <a href="${attr(ytChannel)}" target="_blank" rel="noopener">Open channel ↗</a></p>`;
+
+/* ---------- appearances (film credits) ---------- */
+const appearancesHtml = `<div class="appearances">
+  <span class="lead">Selected appearances</span>
+  <ul class="appearances__list">
+    ${site.selectedAppearances.map((a) => `<li>${esc(a)}</li>`).join('')}
+  </ul>
+</div>`;
+
+const signalLines = Array.from({ length: 7 }, () => `<span class="signal__line" aria-hidden="true">aksendo</span>`).join('');
+const signalHtml = `<section class="signal cv-auto" id="signal" aria-label="aksendo">
+  <div class="signal__inner">
+    <div class="signal__stack">${signalLines}</div>
+    <p class="signal__manifesto">${esc(site.manifesto || 'shaping my sound little by little')}</p>
+  </div>
+</section>`;
 
 /* ---------- links / footer ---------- */
 const footLinks = [];
@@ -259,7 +289,6 @@ function head({ title, desc, canonical, extraLD }) {
 
 /* ---------- page ---------- */
 const genres = site.genres.join(' · ');
-const appearances = site.selectedAppearances.map((a) => a).join(' · ');
 
 const index = `<!doctype html>
 <html lang="en" class="no-js">
@@ -311,9 +340,7 @@ const index = `<!doctype html>
       <h2 class="section-head" id="shows-h">Shows</h2>
       ${showsHtml}
       ${playedHtml}
-      <div class="appearances"><span class="lead mono">Selected appearances</span>${esc(appearances)}
-        ${margin('L', 'appearances', 'ALBANIA · CROATIA · OSLO · RHODES · BERLIN')}
-      </div>
+      ${appearancesHtml}
     </div>
   </section>
 
@@ -328,10 +355,12 @@ const index = `<!doctype html>
     </div>
   </section>
 
+  ${signalHtml}
+
   <section class="section cv-auto" id="mixes" aria-labelledby="mixes-h">
     <div class="wrap grid">
       <h2 class="section-head" id="mixes-h">Mixes</h2>
-      <div class="mixes__grid">${mixesHtml}</div>
+      ${mixesHtml}
     </div>
   </section>
 
@@ -346,6 +375,7 @@ const index = `<!doctype html>
         <p data-bio="3">${esc(site.bio[2])}</p>
         ${margin('R', 'live', 'LOOPING, LAYERING, EXTENDING — LIVE')}
         <p data-bio="4">${esc(site.bio[3])}</p>
+        <p class="bio__evolving" data-evolving="${attr(site.evolving || '')}"></p>
       </div>
     </div>
   </section>
@@ -355,8 +385,8 @@ const index = `<!doctype html>
       <h2 class="section-head" id="contact-h">Contact</h2>
       <a class="contact-mail contact__book" href="mailto:${site.booking}"><span class="contact-mail__part">BOOKINGS@</span><span class="contact-mail__part">AKSENDO.COM</span></a>
       <div class="contact__row">
-        <a href="${site.pressPdf}" download>DOWNLOAD PRESS KIT (PDF) ↓</a>
-        <a href="/press">PRESS ↗</a>
+        <a href="${attr(site.pressUrl || site.pressPdf)}" target="_blank" rel="noopener">PRESS ↗</a>
+        ${site.pressPdf ? `<a href="${attr(site.pressPdf)}" download>DOWNLOAD PRESS KIT (PDF) ↓</a>` : ''}
       </div>
       <div class="contact__row">${contactLinksHtml}</div>
 
@@ -427,7 +457,6 @@ await writeFile(join(ROOT, 'press.html'), press);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>${site.url}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>${site.url}/press</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
 </urlset>
 `;
 await writeFile(join(ROOT, 'public', 'sitemap.xml'), sitemap);
@@ -435,4 +464,4 @@ await writeFile(join(ROOT, 'public', 'robots.txt'), `User-agent: *\nAllow: /\nSi
 await writeFile(join(ROOT, 'public', 'favicon.svg'),
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><text x="50" y="72" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="70" text-anchor="middle" fill="#fff">A</text></svg>`);
 
-console.log(`gen-html: ${upcoming.length} upcoming, ${played.length} played, ${releases.length} releases, ${events.length} events. index.html + press.html written.`);
+console.log(`gen-html: ${upcoming.length} upcoming, ${played.length} played, ${releases.length} releases, ${mixes.length} mixes, ${events.length} events. index.html + press.html written.`);

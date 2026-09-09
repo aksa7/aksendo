@@ -1,4 +1,4 @@
-/* bio.css — narrow measure, generous leading, one pull quote. */
+/* bio.css — narrow measure, generous leading, one pull quote + evolving line. */
 .bio__prose { max-width: var(--measure); font-size: var(--t-lead); line-height: 1.6; }
 .bio__prose p { margin-bottom: var(--s-8); }
 
@@ -22,3 +22,34 @@
   box-sizing: border-box;
 }
 .pull::first-letter { text-transform: lowercase; }
+
+.bio__evolving {
+  margin-top: var(--s-16);
+  min-height: 1.6em;
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: var(--track-meta);
+  text-transform: lowercase;
+  color: var(--grey-60);
+  opacity: 0;
+  border-left: 1px solid var(--grey-20);
+  padding-left: var(--s-3);
+}
+.bio__evolving.is-shown { opacity: 1; }
+.bio__evolving::after {
+  content: "";
+  display: inline-block;
+  width: 0.55ch;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: caret 1s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bio__evolving::after { display: none; }
+}
+@keyframes caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}

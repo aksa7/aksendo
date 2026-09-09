@@ -1,0 +1,89 @@
+/* signal.css — FRAMEHAUS-style stacked aksendo title card. */
+.signal {
+  position: relative;
+  overflow: clip;
+  background: var(--ink);
+  color: var(--paper);
+  padding-block: clamp(4rem, 14vw, 9rem);
+  border-top: 1px solid var(--ink);
+}
+.signal__inner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter-pad);
+  display: grid;
+  justify-items: center;
+  gap: var(--s-12);
+  text-align: center;
+}
+.signal__stack {
+  position: relative;
+  width: min(100%, 52rem);
+  aspect-ratio: 2.4 / 1;
+  display: grid;
+  place-items: center;
+  /* capsule / elliptical window */
+  clip-path: ellipse(48% 42% at 50% 50%);
+  -webkit-mask-image: radial-gradient(ellipse 48% 42% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 48% 42% at 50% 50%, #000 62%, transparent 100%);
+}
+.signal__line {
+  grid-area: 1 / 1;
+  font-family: var(--font-brand);
+  font-weight: 900;
+  font-size: clamp(2.4rem, 11vw, 7.5rem);
+  line-height: 0.78;
+  letter-spacing: -0.04em;
+  text-transform: lowercase;
+  color: var(--paper);
+  white-space: nowrap;
+  user-select: none;
+  will-change: transform, opacity;
+}
+.signal__line:nth-child(1) { transform: translateY(-2.55em); opacity: 0.18; }
+.signal__line:nth-child(2) { transform: translateY(-1.7em);  opacity: 0.32; }
+.signal__line:nth-child(3) { transform: translateY(-0.85em); opacity: 0.55; }
+.signal__line:nth-child(4) { transform: translateY(0);       opacity: 1; }
+.signal__line:nth-child(5) { transform: translateY(0.85em);  opacity: 0.55; }
+.signal__line:nth-child(6) { transform: translateY(1.7em);   opacity: 0.32; }
+.signal__line:nth-child(7) { transform: translateY(2.55em);  opacity: 0.18; }
+
+.signal__manifesto {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: var(--track-meta);
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 36ch;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .signal__stack {
+      animation: signal-breathe linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    @keyframes signal-breathe {
+      from { transform: scale(0.92); opacity: 0.55; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .signal__manifesto {
+      animation: signal-cap linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+    @keyframes signal-cap {
+      from { opacity: 0; transform: translateY(12px); letter-spacing: 0.28em; }
+      to   { opacity: 1; transform: translateY(0); letter-spacing: var(--track-meta); }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .signal__stack {
+    aspect-ratio: 1.6 / 1;
+    clip-path: ellipse(52% 46% at 50% 50%);
+  }
+}

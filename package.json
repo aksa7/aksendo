@@ -6,9 +6,10 @@
   "description": "Official artist site for aksendo — DJ / producer, Kaunas, Lithuania.",
   "scripts": {
     "images": "node scripts/build-images.mjs",
+    "mixes": "node scripts/fetch-mixes.mjs",
     "gen": "node scripts/gen-html.mjs",
-    "prebuild": "node scripts/build-images.mjs && node scripts/gen-html.mjs",
-    "predev": "node scripts/build-images.mjs && node scripts/gen-html.mjs",
+    "prebuild": "node scripts/build-images.mjs && node scripts/fetch-mixes.mjs && node scripts/gen-html.mjs",
+    "predev": "node scripts/build-images.mjs && node scripts/fetch-mixes.mjs && node scripts/gen-html.mjs",
     "build": "vite build",
     "dev": "vite",
     "preview": "vite preview",

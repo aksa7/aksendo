@@ -6,7 +6,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const ANCHORS = {
   streams: '#release-pico-de-amor',
-  appearances: '.appearances',
   zamna: '#release-pico-de-amor',
   road: '#release-berlin-to-ade',
   cyprus: '#release-temporary-miracle',
