@@ -100,6 +100,8 @@ Show artwork (when present) deals in with its row.
 
 ## Press
 - Main **PRESS ↗** opens the shared Drive folder (`site.pressUrl`). `/press` is no longer linked from the homepage or sitemap.
+
+## Still to verify before "done"
 - ~~Lighthouse mobile ≥92~~ — **98** on `vite preview` mobile (v5 pass). Desktop still to spot-check.
 - Real-device 55fps scroll check on the developing hero.
 - Cross-browser: iOS Safari (100svh + smooth scroll), Firefox.
