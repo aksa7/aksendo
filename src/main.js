@@ -47,11 +47,12 @@ async function bootDesktop() {
   // cursor clock — fine pointer only
   if (finePointer()) import('./modules/cursor.js').then((m) => m.initCursorClock());
 
-  // developing hero + entry, guarded by hardware
+  // developing hero + show artwork + entry, guarded by hardware
   let hero = null;
   if (hasWebGL2() && !weakDevice()) {
-    const { initDevelopHero } = await import('./modules/develop.js');
+    const { initDevelopHero, initDevelopShowArt } = await import('./modules/develop.js');
     hero = initDevelopHero();
+    initDevelopShowArt();
     frameProbe(hero);           // live self-downgrade
   }
 

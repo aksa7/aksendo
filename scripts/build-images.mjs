@@ -62,6 +62,29 @@ for (const [src, nm] of [
   ['IMG_4044.jpg', 'mix-3']
 ]) await responsive(src, nm, [480, 800], { fit: 'cover', height: 9 / 16 * 800 });
 
+console.log('› show artwork (design/source/shows/)');
+{
+  const { readdir } = await import('node:fs/promises');
+  const SHOW_SRC = join(SRC, 'shows');
+  await mkdir(SHOW_SRC, { recursive: true });
+  let files = [];
+  try { files = await readdir(SHOW_SRC); } catch { files = []; }
+  const arts = files.filter((f) => /\.(jpe?g|png|webp)$/i.test(f) && !f.startsWith('.'));
+  if (!arts.length) console.log('  · none yet — drop files named to venue slug (see NOTES.md)');
+  for (const file of arts) {
+    const stem = file.replace(/\.[^.]+$/, '');
+    const input = join(SHOW_SRC, file);
+    for (const w of [64, 128, 256]) {
+      const base = sharp(input).grayscale().resize(w, w, { fit: 'cover', position: 'attention' });
+      for (const [fmt, opts] of FORMATS) {
+        const buf = await base.clone().toFormat(fmt, opts).toBuffer();
+        await writeFile(join(OUT, `show-${stem}-${w}.${fmt}`), buf);
+      }
+    }
+    console.log('  ✓ show-' + stem);
+  }
+}
+
 console.log('› placeholder release covers (monochrome, no baked text)');
 // abstract monochrome placeholders — the real title is HTML text on the card.
 const covers = {

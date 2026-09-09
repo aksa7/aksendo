@@ -2,12 +2,14 @@
 // the data layer, at build time, so the site is complete with JavaScript disabled.
 // shows.json / releases.json / links.json / site.json remain the only edit points.
 import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const DATA = join(ROOT, 'src', 'data');
+const SHOW_ART = join(ROOT, 'design', 'source', 'shows');
 const j = async (f) => JSON.parse(await readFile(join(DATA, f), 'utf8'));
 
 const site = await j('site.json');
@@ -55,6 +57,40 @@ function margin(side, id, html) {
 }
 
 /* ---------- shows ---------- */
+function venueSlug(venue) {
+  return String(venue)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+/** Resolve artwork file on disk. `artwork` field wins; else try {slug}.{jpg,jpeg,png,webp}. */
+function resolveArtwork(s) {
+  if (s.artwork) {
+    const p = join(SHOW_ART, s.artwork);
+    if (existsSync(p)) {
+      const stem = s.artwork.replace(/\.[^.]+$/, '');
+      return { file: s.artwork, stem };
+    }
+    return null;
+  }
+  const slug = venueSlug(s.venue);
+  for (const ext of ['.jpg', '.jpeg', '.png', '.webp']) {
+    if (existsSync(join(SHOW_ART, slug + ext))) return { file: slug + ext, stem: slug };
+  }
+  return null;
+}
+
+function showArtPic(stem, venue) {
+  const widths = [64, 128, 256];
+  const set = (fmt) => widths.map((wd) => `/img/gen/show-${stem}-${wd}.${fmt} ${wd}w`).join(', ');
+  return `<picture>
+  <source type="image/avif" srcset="${set('avif')}" sizes="64px">
+  <source type="image/webp" srcset="${set('webp')}" sizes="64px">
+  <img src="/img/gen/show-${stem}-128.jpeg" srcset="${set('jpeg')}" sizes="64px"
+       width="128" height="128" alt="${attr(venue + ' show artwork')}" loading="lazy" decoding="async">
+</picture>`;
+}
+
 function showRow(s, { dotted = false } = {}) {
   const tonight = isToday(s.date);
   const meta = [];
@@ -64,8 +100,14 @@ function showRow(s, { dotted = false } = {}) {
     ? `<span class="show__tickets mono"><a href="${attr(s.tickets)}" target="_blank" rel="noopener">TICKETS ↗</a></span>`
     : `<span class="show__tickets mono mono--dim">—</span>`;
   const time = s.time ? `<span class="mono mono--dim">${esc(s.time)}</span>` : '';
-  return `<div class="show${tonight ? ' show--tonight' : ''}" data-date="${s.date}">
+  const art = resolveArtwork(s);
+  const artHtml = art
+    ? `<span class="show__art" data-develop>${showArtPic(art.stem, s.venue)}</span>`
+    : '';
+  const artClass = art ? ' show--art' : '';
+  return `<div class="show${artClass}${tonight ? ' show--tonight' : ''}" data-date="${s.date}">
     <span class="show__date">${monoDate(s.date)}${tonight ? '<span class="show__flag">TONIGHT</span>' : ''}</span>
+    ${artHtml}
     <span class="show__main">
       <span class="show__venue">${esc(s.venue)}</span>
       <span class="show__meta"><span class="mono mono--dim">${esc(s.city).toUpperCase()}</span>${meta.map((m) => m).join('')}${time}</span>

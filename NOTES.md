@@ -1,9 +1,29 @@
 # NOTES — aksendo.com
 
-## Everything still open (v4 §5)
+## Show artwork (v5 Part C)
+
+Drop square(ish) show images into **`design/source/shows/`**. Naming is the venue slug:
+
+| Venue | Expected filename | Status |
+|---|---|---|
+| Corner Café | `corner-cafe.jpg` | **missing** |
+| Dancing Street | `dancing-street.jpg` | **missing** |
+| Bulbul Berlin | `bulbul-berlin.jpg` | **missing** |
+| Zu Hause | `zu-hause.jpg` | **missing** |
+| ADE Network Hub | `ade-network-hub.jpg` | **missing** |
+
+Rules:
+- Filename = venue name, lowercased, accents stripped, spaces/`&`/punctuation → hyphens. Prefer `.jpg` (also accepts `.jpeg` / `.png` / `.webp`).
+- Optional: set `"artwork": "corner-cafe.jpg"` in `shows.json` to pin a non-slug name. If the field is `null`, the build auto-picks `{slug}.jpg` when the file exists.
+- A show with no file on disk renders a normal row — **no gap, no placeholder box**.
+- Pipeline emits `public/img/gen/show-{stem}-{64,128,256}.{avif,webp,jpeg}` on `npm run images`.
+- Desktop: thumbs use the same develop-from-dither treatment as the hero. Mobile (<820px): plain image. Click/tap a row with art Flip-expands the thumb.
+
+## Everything still open (v4 §5 + v5)
 
 | Item | Blocks / current behaviour |
 |---|---|
+| Show artwork ×5 | See checklist above — all missing. Rows work without them. |
 | Release cover art, 3 × 1500×1500 | Music ships **monochrome typographic placeholders** (distinct pattern per release). Drop real art into `design/source/` as `cover-<id>.jpg` and extend `scripts/build-images.mjs`. |
 | Spotify track URLs — Pico De Amor, Berlin To ADE | Those two cards show **SoundCloud only**. `links.spotify` is `null` in `releases.json`; add the real track URLs there. |
 | Resident Advisor URL | `ra: null` in `links.json` → **renders as nothing** (footer + JSON-LD `sameAs`). Add when the RA page is approved. |
@@ -15,6 +35,7 @@
 Nothing above blocks the build; each degrades to an absence, never a broken control.
 
 ## Client actions
+- **Send show artwork** named to the checklist above → `design/source/shows/`.
 - **Regenerate the press-kit PDF**: remove the age; change the `+ LINKTR.EE/AKSENDO` lines to `aksendo.com`; then place it at `public/aksendo-press-kit-2026.pdf`.
 - **Point the Instagram bio link at `aksendo.com`** (not Linktree) once live — the site is now the hub (booking + dates).
 - **Resident Advisor genres**: RA lists House / Tech House / **Disco**; the site + kit say no Disco (Indie Dance / Afro / Melodic). Edit RA to match.
@@ -29,10 +50,12 @@ Nothing above blocks the build; each degrades to an absence, never a broken cont
 - **Booking form end-to-end (send + auto-reply) is unverified** because it needs the Resend key + verified domain above. Code path is complete and validated; verify after provisioning.
 
 ## Engineering decisions & known behaviours
-- **Developing photograph is currently hero-only.** The OGL engine (single WebGL context, blue-noise dither, velocity domain-warp, idle-paused rAF) runs on the hero — the above-the-fold wow and LCP element. Other photos render as clean monochrome (the brief's blessed degraded state). Extending the effect to covers/mixes needs the shared-renderer→per-element-canvas blit path; scoped as a fast-follow to hold the 55fps floor. This is the one deliberate reduction from v2 §B1's "every photograph".
-- **WebGL context strategy:** single `fixed` canvas overlaying the hero, one context. (The multi-image blit alternative was not benchmarked yet — deferred with the scope note above.)
+- **Developing photograph (v5):** hero + show-row artwork thumbs on desktop (≥820, WebGL2, not weak). Mobile stays plain `<img>`. Show thumbs use per-host small canvases (cheap at 60px). Self-downgrade guard still applies to the hero layer.
+- **Native scroll only (v5 A2).** Smooth-scroll library removed after lag reports. Velocity for reactive type / develop is a rolling `scrollY` delta on rAF. `scroll-behavior: smooth` kept for anchor jumps.
+- **City/time readout (v5 A1):** one `position:fixed` top-left instance; never trails the cursor. Footer clock is always **KAUNAS** (home base), independent of scroll city.
+- **WebGL context strategy:** one canvas per develop host (hero + each visible show thumb). Fine at current show count; revisit if a tour list grows huge.
 - **Self-downgrade guard (intended, not a bug):** develop layer disposes if `hardwareConcurrency<=4 || deviceMemory<=4 || !WebGL2`, or if the mean of the first 90 frames >20ms. On dispose the plain `<img>` stands. rAF stops after 400ms idle (a static page draws zero frames); it also stops on tab-hide.
-- **SplitText not used.** v2 §B2 asked for SplitText on the entry's tracking close; a plain `letter-spacing` tween achieves the identical effect with zero extra library bytes, so SplitText was dropped. (Justified per the brief's own "cut what doesn't earn bytes" ethos.) GSAP Flip **is** used (release expand). ScrollTrigger is used (marginalia).
+- **SplitText not used.** v2 §B2 asked for SplitText on the entry's tracking close; a plain `letter-spacing` tween achieves the identical effect with zero extra library bytes, so SplitText was dropped. GSAP Flip is used (release expand + show artwork expand). ScrollTrigger is used (marginalia).
 - **B7 forbidden-kit exceptions used:** none.
 - **Mixes facade needs per-video IDs.** The click-to-load facade (v4 default *a*) is wired, but no YouTube video IDs were supplied — so a click currently opens the YouTube channel (effectively behaviour *b*). Add video IDs to a data file and flip `channelToEmbed()` in `embeds.js` to inject the iframe in place.
 - **Email field added to the booking form.** The brief listed name/organisation/date/city/message, but an auto-reply to the sender needs their address — so a required Email field was added. Flagging as a deliberate addition.
@@ -41,9 +64,10 @@ Nothing above blocks the build; each degrades to an absence, never a broken cont
 ## Image inventory
 | Source (`design/source/`) | Used as | Generated (`public/img/gen/`) | Status |
 |---|---|---|---|
-| hero-hat-coast_1134x782.jpg | Hero, OG, mix-3 thumb | hero-{640,960,1134}.{avif,webp,jpeg}, og.jpg | real, **low-res** — want full-res |
+| IMG_4044.jpg (3264×2448) | Hero, OG, mix-3 thumb | hero-{640,960,1600,2560}.\*, og.jpg | real, full-res (v5 A3) |
 | portrait-dj-river_660x1275.jpg | Press portrait, mix-1 thumb | portrait-{480,660}.\*, mix-1-\* | real |
 | live-decksandstories_1241x931.jpg | Press live, mix-2 thumb | live-{640,1000,1241}.\*, mix-2-\* | real |
+| shows/{venue-slug}.jpg | Show row thumbs | show-{slug}-{64,128,256}.\* | **none yet** — see checklist |
 | — (generated) | Release covers ×3 | cover-{id}-{400,800,1200}.\* | **placeholder** (abstract monochrome) |
 | — (generated) | Grain overlay | grain.webp | ok |
 | — (generated) | Blue-noise dither | bluenoise.png (void-and-cluster) | ok |
@@ -55,9 +79,10 @@ Nothing above blocks the build; each degrades to an absence, never a broken cont
 - Mobile 375px: hero fills, MUSIC clean, sticky ticker swaps notes; no animation libraries downloaded.
 - Desktop 1440: entry → developing hero, marginalia scrub in the gutters, reactive-width headings.
 - Grep gates pass: no `gmail / 23-year / 247,252 / 250,000 / <audio> / jaksamitauskas` in `dist/`; `bookings@aksendo.com` is the only address.
+- `grep -ri lenis src/` → empty (v5 A2).
 
 ## Still to verify before "done"
-- Lighthouse mobile ≥95 / desktop ≥88 (run against `wrangler dev` or a deploy).
+- Lighthouse mobile ≥92 / desktop ≥88 (run against `wrangler dev` or a deploy).
 - Real-device 55fps scroll check on the developing hero.
 - Cross-browser: iOS Safari (100svh + smooth scroll), Firefox.
 - 200% zoom / 320px.

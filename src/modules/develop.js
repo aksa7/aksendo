@@ -1,7 +1,6 @@
-// develop.js — the hero photograph "develops" like a darkroom print.
-// Single WebGL context overlaying the hero image. Blue-noise dither resolves to
-// the photo; scroll velocity warps and re-dithers; the loop pauses when idle.
-// Degrades to the plain <img> beneath on any failure or weak hardware.
+// develop.js — photographs "develop" like a darkroom print (blue-noise dither → photo).
+// Used on the hero and (desktop) show-row artwork thumbs. Each host gets its own
+// small WebGL canvas overlay; the plain <img> always remains as the fallback.
 import { Renderer, Triangle, Program, Mesh, Texture } from 'ogl';
 import { bus } from './bus.js';
 
@@ -21,7 +20,6 @@ float vnoise(vec2 p){
   return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
 }
 void main(){
-  // liquid domain warp, scaled by velocity (>=3px rest, <=12px max)
   float amp = mix(3.0, 12.0, clamp(uVelocity,0.0,1.0));
   vec2 w = vec2(
     vnoise(vUv*6.0 + uTime*0.05),
@@ -31,15 +29,10 @@ void main(){
 
   float lum = texture2D(tMap, uv).r;
   float bn = texture2D(tNoise, gl_FragCoord.xy / 64.0).r;
-
-  // coarse ordered dither (newspaper halftone) at rest state
   float dith = step(bn, lum);
-  // resolved photograph
   float img = lum;
-
   float p = smoothstep(0.0, 1.0, uProgress);
   float v = mix(dith, img, p);
-  // a touch of film grain in the mid-development
   v += (hash(vUv*uResolution + uTime) - 0.5) * 0.05 * (1.0 - p);
   gl_FragColor = vec4(vec3(clamp(v,0.0,1.0)), 1.0);
 }`;
@@ -47,21 +40,20 @@ void main(){
 const VERT = `attribute vec2 uv; attribute vec2 position; varying vec2 vUv;
 void main(){ vUv = uv; gl_Position = vec4(position, 0.0, 1.0); }`;
 
-export function initDevelopHero() {
-  const host = document.querySelector('.hero__media[data-develop]');
-  if (!host) return { dispose() {} };
+function attachDevelop(host, { progressMode = 'scroll' } = {}) {
   const img = host.querySelector('img');
-  if (!img) return { dispose() {} };
+  if (!img) return { dispose() {}, reveal() {}, kick() {} };
+
+  if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
 
   const canvas = document.createElement('canvas');
   Object.assign(canvas.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', zIndex: '1' });
   let renderer, gl, mesh, program, raf = 0, running = false, disposed = false;
-  let noiseImg;
 
   try {
     renderer = new Renderer({ alpha: false, canvas, dpr: Math.min(window.devicePixelRatio || 1, 2) });
     gl = renderer.gl;
-  } catch { return { dispose() {} }; }
+  } catch { return { dispose() {}, reveal() {}, kick() {} }; }
 
   const tMap = new Texture(gl, { generateMipmaps: false });
   const tNoise = new Texture(gl, { wrapS: gl.REPEAT, wrapT: gl.REPEAT, generateMipmaps: false });
@@ -72,7 +64,7 @@ export function initDevelopHero() {
     el.onload = () => { tMap.image = el; tMap.needsUpdate = true; kick(); };
     el.src = img.currentSrc || img.src;
   };
-  noiseImg = new Image();
+  const noiseImg = new Image();
   noiseImg.onload = () => { tNoise.image = noiseImg; tNoise.needsUpdate = true; };
   noiseImg.src = '/img/gen/bluenoise.png';
 
@@ -88,24 +80,36 @@ export function initDevelopHero() {
 
   function resize() {
     const r = host.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return;
     renderer.setSize(r.width, r.height);
     program.uniforms.uResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight];
   }
 
-  // developing progress: revealed after entry, in-view factor from scroll
-  let revealed = 0;
+  let revealed = progressMode === 'scroll' ? 0 : 1;
+  let inView = 0;
   let lastProgress = -1, idleSince = 0;
 
-  function heroProgress() {
+  if (progressMode === 'view') {
+    const io = new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        inView = en.isIntersecting ? Math.min(Math.max(en.intersectionRatio * 1.4, 0), 1) : 0;
+        if (en.isIntersecting) kick();
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    io.observe(host);
+  }
+
+  function computeProgress() {
+    if (progressMode === 'view') return revealed * Math.max(inView, 0.15);
     const r = host.getBoundingClientRect();
     const h = r.height || 1;
-    const inView = Math.min(Math.max(1 - (-r.top) / (h * 0.9), 0), 1); // 1 in view, →0 as it scrolls up
-    return revealed * inView;
+    const vis = Math.min(Math.max(1 - (-r.top) / (h * 0.9), 0), 1);
+    return revealed * vis;
   }
 
   function frame(t) {
     if (disposed) return;
-    const p = heroProgress();
+    const p = computeProgress();
     program.uniforms.uProgress.value = p;
     program.uniforms.uVelocity.value = bus.velocity;
     program.uniforms.uTime.value = t * 0.001;
@@ -114,7 +118,7 @@ export function initDevelopHero() {
     const moving = Math.abs(p - lastProgress) > 0.0006 || bus.velocity > 0.002;
     lastProgress = p;
     if (moving) idleSince = t;
-    if (t - idleSince > 400) { running = false; return; }   // draw zero frames when static
+    if (t - idleSince > 400) { running = false; return; }
     raf = requestAnimationFrame(frame);
   }
 
@@ -131,13 +135,12 @@ export function initDevelopHero() {
   setImg();
   canvas.setAttribute('aria-hidden', 'true');
   host.appendChild(canvas);
-  img.style.opacity = '0';            // GL layer stands in; img is the fallback
+  img.style.opacity = '0';
   window.addEventListener('resize', onResize);
   window.addEventListener('scroll', onScroll, { passive: true, capture: true });
   window.addEventListener('wheel', onScroll, { passive: true });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
 
-  // reveal the hero (called when entry finishes / immediately if no entry)
   function reveal() {
     const start = performance.now();
     const dur = 850;
@@ -160,8 +163,26 @@ export function initDevelopHero() {
       ext && ext.loseContext();
     } catch {}
     canvas.remove();
-    img.style.opacity = '';           // plain photo stands
+    img.style.opacity = '';
   }
 
   return { reveal, dispose, kick };
+}
+
+export function initDevelopHero() {
+  const host = document.querySelector('.hero__media[data-develop]');
+  if (!host) return { dispose() {}, reveal() {}, kick() {} };
+  return attachDevelop(host, { progressMode: 'scroll' });
+}
+
+/** Desktop show-row artwork thumbs — same dither→photo material, small scale. */
+export function initDevelopShowArt() {
+  const hosts = [...document.querySelectorAll('.show__art[data-develop]')];
+  const layers = hosts.map((h) => attachDevelop(h, { progressMode: 'view' }));
+  // Auto-reveal once in view; no entry sequence for thumbs
+  layers.forEach((l) => l.reveal?.());
+  return {
+    dispose() { layers.forEach((l) => l.dispose?.()); },
+    kick() { layers.forEach((l) => l.kick?.()); }
+  };
 }
