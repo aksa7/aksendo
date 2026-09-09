@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+.wrangler/
+*.log
+.venv/
+# generated image derivatives (rebuilt by scripts/build-images.mjs)
+public/img/gen/

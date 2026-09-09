@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aksendo",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-08-15",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "vars": {
+    "BOOKING_TO": "bookings@aksendo.com",
+    "BOOKING_FROM": "bookings@aksendo.com"
+  }
+  // Secrets set out-of-band, not in repo:
+  //   wrangler secret put RESEND_API_KEY
+  // Routes / custom domain (aksendo.com apex + www->apex 301) configured in the
+  // Cloudflare dashboard or via [[routes]] once the zone is attached.
+}

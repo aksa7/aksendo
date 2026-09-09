@@ -1,0 +1,31 @@
+{
+  "name": "AKSENDO",
+  "roleLine": "DJ / PRODUCER — KAUNAS, LITHUANIA",
+  "genres": ["HOUSE", "TECH HOUSE", "INDIE DANCE", "AFRO HOUSE", "MELODIC"],
+  "availableFor": ["FESTIVALS", "CLUBS", "OPEN AIRS", "BEACH BARS"],
+  "booking": "bookings@aksendo.com",
+  "domain": "aksendo.com",
+  "url": "https://aksendo.com",
+  "title": "AKSENDO — DJ / Producer, Kaunas",
+  "description": "Aksendo — house DJ and producer from Kaunas, Lithuania. House, tech house, indie dance, Afro house and melodic. Booking and dates.",
+  "timezone": "Europe/Vilnius",
+  "pressPdf": "/aksendo-press-kit-2026.pdf",
+  "bio": [
+    "Aksendo is a house DJ and producer from Kaunas, Lithuania. He does not walk into a room with one fixed formula. His sets move through house, tech house, indie dance, Afro house and melodic territory, shaped by the place, the hour and the people in front of him.",
+    "A sunset on the Albanian coast, a yacht cutting through Croatia or a Friday night in Kaunas all ask for a different kind of energy. Feeling that shift and giving the room space is where he feels most at home.",
+    "When he leans into tech house or indie dance, his approach becomes especially hands-on. He likes to build the groove live by looping, layering, extending transitions and improvising in the moment, so the set keeps evolving instead of simply running track by track.",
+    "Lightness runs through everything he plays. His own productions begin the same way his strongest memories do, with a place, a road or a feeling he cannot quite leave behind."
+  ],
+  "pullQuote": "lightness runs through everything he plays",
+  "selectedAppearances": [
+    "DECKS&STORIES EVENTS",
+    "ATRADIMAI FESTIVAL",
+    "CORNER CAFÉ VILNIUS",
+    "VELA E BARDHË, ALBANIA",
+    "SALINAS BEACH BAR, ALBANIA",
+    "PEMA E THATË KSAMIL",
+    "BLUE LAGOON YACHT, CROATIA",
+    "SUN & MOON BEACH LOUNGE",
+    "PRIVATE EVENTS IN OSLO AND RHODES"
+  ]
+}

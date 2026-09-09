@@ -1,0 +1,38 @@
+[
+  {
+    "id": "pico-de-amor",
+    "title": "Pico De Amor",
+    "genre": "Afro House",
+    "label": "Connected",
+    "note": "Built for open air moments and already heard on dance floors, including Zamna Tulum.",
+    "streams": { "value": 330000, "platform": "spotify", "as_of": "2026-09" },
+    "links": {
+      "soundcloud": "https://soundcloud.com/connectch/premiere-aksendo-pico-de-amor-connected",
+      "spotify": null
+    },
+    "soundcloudChannel": "connected"
+  },
+  {
+    "id": "berlin-to-ade",
+    "title": "Berlin To ADE",
+    "genre": "Melodic Tech House",
+    "label": "The Anchor Records",
+    "with": "OM&Y",
+    "note": "Written on the road from Berlin to Amsterdam Dance Event.",
+    "links": {
+      "soundcloud": "https://soundcloud.com/theanchorecords/aksendo-om-y-berlin-to-ade",
+      "spotify": null
+    },
+    "soundcloudChannel": "the-anchor-records"
+  },
+  {
+    "id": "temporary-miracle",
+    "title": "Temporary Miracle",
+    "genre": "Afro House",
+    "note": "The first release, born from the feeling of freedom carried home from a holiday in Cyprus.",
+    "links": {
+      "soundcloud": null,
+      "spotify": "https://open.spotify.com/track/1wwpeJMRsCYkSqxlE25dcy"
+    }
+  }
+]

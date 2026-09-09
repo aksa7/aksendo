@@ -1,0 +1,16 @@
+/* bio.css — narrow measure, generous leading, one pull quote. */
+.bio__prose { max-width: var(--measure); font-size: var(--t-lead); line-height: 1.6; }
+.bio__prose p { margin-bottom: var(--s-8); }
+
+.pull {
+  max-width: 20ch;
+  margin: var(--s-16) 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-style: italic;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variation-settings: "wght" 800, "wdth" 110;
+}
+.pull::first-letter { text-transform: lowercase; }

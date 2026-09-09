@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://aksendo.com/sitemap.xml

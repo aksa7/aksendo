@@ -1,0 +1,72 @@
+/* shows.css — dense tour table. mono dates, display venues, instant hover invert. */
+.shows__list { border-top: 1px solid var(--ink); }
+
+.show {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr auto;
+  align-items: baseline;
+  gap: var(--s-4) var(--s-6);
+  padding: var(--s-4) var(--s-2);
+  border-bottom: 1px solid var(--grey-20);
+  transition: background var(--dur-hover) linear, color var(--dur-hover) linear;
+  position: relative;
+}
+.show:hover, .show:focus-within { background: var(--ink); color: var(--paper); }
+.show:hover .mono--dim, .show:focus-within .mono--dim { color: var(--grey-20); }
+
+.show__date { font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase; white-space: nowrap; }
+.show__main { min-width: 0; }
+.show__venue { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; line-height: 1.1; font-variation-settings: "wght" 800, "wdth" 112; }
+.show__meta { margin-top: 2px; display: flex; flex-wrap: wrap; gap: 0.4em 0.9em; }
+.show__tickets { align-self: center; white-space: nowrap; }
+.show__tickets a { border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+/* state, not decoration: tonight = filled black block */
+.show--tonight { background: var(--ink); color: var(--paper); }
+.show--tonight .mono--dim { color: var(--grey-20); }
+.show--tonight .show__flag { display: inline-block; }
+.show__flag { display: none; font-family: var(--font-mono); font-size: var(--t-meta-sm); letter-spacing: var(--track-meta); background: var(--paper); color: var(--ink); padding: 1px 6px; margin-left: 0.5em; }
+
+/* festival group */
+.festival { border-bottom: 1px solid var(--grey-20); }
+.festival__head {
+  display: flex; align-items: baseline; gap: 0.6em;
+  padding: var(--s-6) var(--s-2) var(--s-2);
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+}
+.festival__head::before { content: "▚"; }
+.festival .show { border-bottom: 1px dotted var(--grey-20); }
+.festival .show:last-child { border-bottom: none; }
+
+/* played (collapsed) */
+.played { margin-top: var(--s-12); }
+.played > summary {
+  cursor: pointer; list-style: none;
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+  color: var(--grey-60); padding: var(--s-3) 0; border-bottom: 1px solid var(--grey-20);
+}
+.played > summary::-webkit-details-marker { display: none; }
+.played > summary::before { content: "▸ "; }
+.played[open] > summary::before { content: "▾ "; }
+.played .show { opacity: 0.62; }
+
+.shows__empty {
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+  padding: var(--s-8) 0; border-bottom: 1px solid var(--grey-20);
+}
+.shows__empty a { border-bottom: 1px solid currentColor; }
+
+/* selected appearances — one dense mono block */
+.appearances {
+  margin-top: var(--s-16);
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta);
+  text-transform: uppercase; line-height: 2; color: var(--grey-60);
+  max-width: 70ch;
+}
+.appearances .lead { color: var(--ink); display: block; margin-bottom: var(--s-3); }
+
+@media (max-width: 640px) {
+  .show { grid-template-columns: 1fr; gap: var(--s-1); }
+  .show__tickets { justify-self: start; }
+  .show__venue { font-size: 1.25rem; }
+}

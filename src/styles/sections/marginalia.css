@@ -1,0 +1,61 @@
+/* marginalia.css — printer's-margin notes.
+   Baseline (no-JS / reduced-motion / mobile default): static inline asides in the
+   flow, fully legible. Motion mode (JS, >=820px, no reduced-motion): JS lifts them
+   into the sticky gutters and scrubs them with GSAP. */
+.margin {
+  display: block;
+  max-width: 34ch;
+  margin: var(--s-8) 0;
+  padding-top: var(--s-2);
+  border-top: 1px solid var(--ink);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta-sm);
+  letter-spacing: var(--track-meta);
+  text-transform: uppercase;
+  color: var(--grey-60);
+  line-height: 1.5;
+}
+.margin b { color: var(--ink); font-weight: 400; }
+
+/* motion mode: gutters hold absolutely-positioned notes */
+body.motion .margin {
+  position: absolute;
+  margin: 0;
+  border-top-color: var(--ink);
+  will-change: transform, opacity;
+}
+.gutters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: none;                 /* only shown in motion mode */
+  z-index: 5;
+}
+body.motion .gutters { display: block; }
+.gutter {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: var(--gutter-pad);
+}
+.gutter--l { left: 0; }
+.gutter--r { right: 0; }
+
+/* mobile ticker (JS builds it under 820px) */
+.ticker {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  padding: var(--s-3) var(--gutter-pad);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta-sm);
+  letter-spacing: var(--track-meta);
+  text-transform: uppercase;
+  min-height: 2.4em;
+  display: none;
+}
+.ticker.is-on { display: block; }
+/* when the ticker is active, the inline notes are redundant */
+body.has-ticker .margin { display: none; }
+.ticker__item { transition: opacity 320ms ease; }

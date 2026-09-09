@@ -1,0 +1,58 @@
+/* contact.css — loud mailto, links, booking form. */
+.contact { background: var(--paper); }
+.contact__book {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 7vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  font-variation-settings: "wght" 800, "wdth" 112;
+  word-break: break-word;
+  display: inline-block;
+}
+.contact__book:hover { background: var(--ink); color: var(--paper); }
+
+.contact__row { margin-top: var(--s-8); display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-6); }
+.contact__row a {
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+  border-bottom: 1px solid var(--ink); padding-bottom: 2px;
+}
+.contact__row a:hover { background: var(--ink); color: var(--paper); }
+
+/* booking form */
+.bform { margin-top: var(--s-16); max-width: 52ch; }
+.bform__grid { display: grid; gap: var(--s-4); }
+.bform label { display: block; }
+.bform .lbl {
+  display: block; font-family: var(--font-mono); font-size: var(--t-meta-sm);
+  letter-spacing: var(--track-meta); text-transform: uppercase; color: var(--grey-60); margin-bottom: var(--s-1);
+}
+.bform input, .bform textarea {
+  width: 100%; background: var(--paper); color: var(--ink);
+  border: 1px solid var(--ink); padding: var(--s-3) var(--s-3); border-radius: 0;
+  font-size: 1rem;
+}
+.bform textarea { min-height: 7rem; resize: vertical; }
+.bform__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.bform__submit {
+  margin-top: var(--s-4); justify-self: start;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--track-meta); text-transform: uppercase;
+  padding: var(--s-3) var(--s-8); border: 1px solid var(--ink);
+}
+.bform__submit:hover { background: var(--paper); color: var(--ink); }
+.bform__submit[disabled] { opacity: 0.5; cursor: default; }
+.bform__note { margin-top: var(--s-3); font-family: var(--font-mono); font-size: var(--t-meta-sm); letter-spacing: 0.06em; color: var(--grey-60); }
+.bform__msg { font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: 0.04em; }
+.bform__msg--ok { color: var(--ink); }
+.bform__msg--err { color: var(--ink); border-left: 3px solid var(--ink); padding-left: var(--s-3); }
+
+.site-foot {
+  padding: var(--s-12) var(--gutter-pad);
+  border-top: 1px solid var(--grey-20);
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-4);
+  font-family: var(--font-mono); font-size: var(--t-meta-sm); letter-spacing: var(--track-meta);
+  text-transform: uppercase; color: var(--grey-60);
+}
+.site-foot a:hover { color: var(--ink); }

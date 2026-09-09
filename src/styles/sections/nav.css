@@ -1,0 +1,34 @@
+/* nav.css — persistent top bar: wordmark-return + bookings. */
+.topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--s-4) var(--gutter-pad);
+  mix-blend-mode: difference;      /* readable over black photo AND paper */
+  color: #fff;                     /* difference of white flips per background */
+  pointer-events: none;
+}
+.topbar a, .topbar button { pointer-events: auto; }
+.topbar .mono { color: #fff; }
+
+.topbar__home {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.topbar__right { display: flex; align-items: center; gap: var(--s-6); }
+.topbar__book {
+  font-family: var(--font-mono);
+  font-size: var(--t-meta);
+  letter-spacing: var(--track-meta);
+  text-transform: uppercase;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 2px;
+}
+/* nav appears after the entry; keep it usable without JS */
+.no-js .topbar, .reduced .topbar { opacity: 1; }

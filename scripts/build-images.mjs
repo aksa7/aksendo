@@ -1,0 +1,168 @@
+// Image pipeline for aksendo.com
+// Reads real source photography from design/source/, emits pre-sized AVIF + WebP
+// + JPEG into public/img/gen/. Also generates: monochrome placeholder release
+// covers, a 1200x630 OG image, an animated-grain tile, and a blue-noise tile for
+// the developing-photograph shader. Idempotent; run by `prebuild`.
+import sharp from 'sharp';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(__dirname, '..');
+const SRC = join(ROOT, 'design', 'source');
+const OUT = join(ROOT, 'public', 'img', 'gen');
+
+const FORMATS = [
+  ['avif', { quality: 55, effort: 4 }],
+  ['webp', { quality: 72 }],
+  ['jpeg', { quality: 78, mozjpeg: true, progressive: true }]
+];
+
+await mkdir(OUT, { recursive: true });
+
+// grayscale everything: the site is strictly monochrome.
+async function responsive(srcFile, name, widths, { fit = 'cover', height = null } = {}) {
+  const input = join(SRC, srcFile);
+  if (!existsSync(input)) { console.warn('  ! missing source', srcFile, '- skipped'); return; }
+  for (const w of widths) {
+    const base = sharp(input).grayscale().resize({
+      width: w, height: height ? Math.round(height * (w / widths[widths.length - 1])) : null,
+      fit, position: 'attention', withoutEnlargement: true
+    });
+    for (const [fmt, opts] of FORMATS) {
+      const buf = await base.clone().toFormat(fmt, opts).toBuffer();
+      await writeFile(join(OUT, `${name}-${w}.${fmt}`), buf);
+    }
+  }
+  console.log('  ✓', name, widths.join('/'));
+}
+
+async function fromSvg(svg, name, size, formats = FORMATS) {
+  const base = sharp(Buffer.from(svg)).resize(size, size);
+  for (const [fmt, opts] of formats) {
+    const buf = await base.clone().toFormat(fmt, opts).toBuffer();
+    await writeFile(join(OUT, `${name}.${fmt}`), buf);
+  }
+}
+
+console.log('› photography');
+// hero — landscape source; full-bleed. keep the face (attention crop).
+await responsive('hero-hat-coast_1134x782.jpg', 'hero', [640, 960, 1134], { fit: 'cover' });
+// bio / press live shots
+await responsive('portrait-dj-river_660x1275.jpg', 'portrait', [480, 660], { fit: 'cover' });
+await responsive('live-decksandstories_1241x931.jpg', 'live', [640, 1000, 1241], { fit: 'cover' });
+// mix thumbnails, 16:9
+console.log('› mix thumbnails (placeholder, reuse real frames)');
+for (const [src, nm] of [
+  ['portrait-dj-river_660x1275.jpg', 'mix-1'],
+  ['live-decksandstories_1241x931.jpg', 'mix-2'],
+  ['hero-hat-coast_1134x782.jpg', 'mix-3']
+]) await responsive(src, nm, [480, 800], { fit: 'cover', height: 9 / 16 * 800 });
+
+console.log('› placeholder release covers (monochrome, no baked text)');
+// abstract monochrome placeholders — the real title is HTML text on the card.
+const covers = {
+  'cover-pico-de-amor': `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#000"/>${
+    Array.from({ length: 14 }, (_, i) => `<rect x="${-200 + i * 130}" y="-200" width="60" height="2200" fill="#fff" transform="rotate(24 750 750)"/>`).join('')
+  }</svg>`,
+  'cover-berlin-to-ade': `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#fff"/>${
+    Array.from({ length: 9 }, (_, i) => `<circle cx="750" cy="1500" r="${180 + i * 165}" fill="none" stroke="#000" stroke-width="26"/>`).join('')
+  }</svg>`,
+  'cover-temporary-miracle': (() => {
+    let dots = ''; const g = 20;
+    for (let y = 0; y < g; y++) for (let x = 0; x < g; x++) {
+      const r = 4 + (y / g) * 30; dots += `<circle cx="${37 + x * 75}" cy="${37 + y * 75}" r="${r}" fill="#000"/>`;
+    }
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1500"><rect width="1500" height="1500" fill="#fff"/>${dots}</svg>`;
+  })()
+};
+for (const [name, svg] of Object.entries(covers)) {
+  await mkdir(OUT, { recursive: true });
+  const base = sharp(Buffer.from(svg));
+  for (const w of [400, 800, 1200]) for (const [fmt, opts] of FORMATS) {
+    const buf = await base.clone().resize(w, w).toFormat(fmt, opts).toBuffer();
+    await writeFile(join(OUT, `${name}-${w}.${fmt}`), buf);
+  }
+  console.log('  ✓', name);
+}
+
+console.log('› OG image 1200x630');
+{
+  const input = join(SRC, 'hero-hat-coast_1134x782.jpg');
+  const hero = await sharp(input).grayscale().resize(1200, 630, { fit: 'cover', position: 'attention' })
+    .modulate({ brightness: 0.62 }).toBuffer();
+  const overlay = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+       <rect width="1200" height="630" fill="#000" opacity="0.28"/>
+       <text x="64" y="360" font-family="'Arial Black','Archivo',Arial,sans-serif" font-weight="900"
+             font-size="150" letter-spacing="-6" fill="#fff">AKSENDO</text>
+       <text x="70" y="420" font-family="'Courier New',monospace" font-size="26" letter-spacing="6"
+             fill="#fff">DJ / PRODUCER — KAUNAS, LITHUANIA</text>
+     </svg>`);
+  const og = await sharp(hero).composite([{ input: overlay }]).jpeg({ quality: 82 }).toBuffer();
+  await writeFile(join(OUT, 'og.jpg'), og);
+  console.log('  ✓ og.jpg');
+}
+
+console.log('› grain tile 128x128 (film grain = white noise)');
+{
+  const n = 128, buf = Buffer.alloc(n * n * 4);
+  for (let i = 0; i < n * n; i++) { const v = Math.random() * 255 | 0; buf[i*4]=v; buf[i*4+1]=v; buf[i*4+2]=v; buf[i*4+3]=255; }
+  await sharp(buf, { raw: { width: n, height: n, channels: 4 } }).webp({ quality: 40, alphaQuality: 40 })
+    .toFile(join(OUT, 'grain.webp'));
+  console.log('  ✓ grain.webp');
+}
+
+console.log('› blue-noise tile 64x64 (void-and-cluster)');
+{
+  const N = 64, M = N * N;
+  const bin = new Uint8Array(M);
+  // seed ~10% ones
+  const seeds = Math.round(M * 0.1);
+  for (let k = 0; k < seeds;) { const p = Math.random() * M | 0; if (!bin[p]) { bin[p] = 1; k++; } }
+  const SIGMA = 1.9, R = 6;
+  const energyAt = (idx, arr) => {
+    const x = idx % N, y = (idx / N) | 0; let e = 0;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      if (!dx && !dy) continue;
+      const nx = (x + dx + N) % N, ny = (y + dy + N) % N;
+      if (arr[ny * N + nx]) e += Math.exp(-(dx*dx + dy*dy) / (2 * SIGMA * SIGMA));
+    }
+    return e;
+  };
+  // relax seed pattern
+  for (let it = 0; it < 4; it++) {
+    let tight = -1, te = -Infinity, loose = -1, le = Infinity;
+    for (let i = 0; i < M; i++) {
+      const e = energyAt(i, bin);
+      if (bin[i] && e > te) { te = e; tight = i; }
+      if (!bin[i] && e < le) { le = e; loose = i; }
+    }
+    if (tight < 0 || loose < 0) break;
+    bin[tight] = 0; bin[loose] = 1;
+  }
+  const rank = new Int32Array(M).fill(-1);
+  const work = bin.slice();
+  let ones = work.reduce((a, b) => a + b, 0);
+  // phase 1: remove tightest cluster, rank downward
+  for (let r = ones - 1; r >= 0; r--) {
+    let tight = -1, te = -Infinity;
+    for (let i = 0; i < M; i++) if (work[i]) { const e = energyAt(i, work); if (e > te) { te = e; tight = i; } }
+    work[tight] = 0; rank[tight] = r;
+  }
+  // phase 2: fill largest void upward
+  const work2 = bin.slice();
+  for (let r = ones; r < M; r++) {
+    let loose = -1, le = Infinity;
+    for (let i = 0; i < M; i++) if (!work2[i]) { const e = energyAt(i, work2); if (e < le) { le = e; loose = i; } }
+    work2[loose] = 1; rank[loose] = r;
+  }
+  const buf = Buffer.alloc(M * 4);
+  for (let i = 0; i < M; i++) { const v = Math.round(rank[i] / (M - 1) * 255); buf[i*4]=v; buf[i*4+1]=v; buf[i*4+2]=v; buf[i*4+3]=255; }
+  await sharp(buf, { raw: { width: N, height: N, channels: 4 } }).png().toFile(join(OUT, 'bluenoise.png'));
+  console.log('  ✓ bluenoise.png');
+}
+
+console.log('done.');

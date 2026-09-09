@@ -1,0 +1,26 @@
+{
+  "name": "aksendo-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Official artist site for aksendo — DJ / producer, Kaunas, Lithuania.",
+  "scripts": {
+    "images": "node scripts/build-images.mjs",
+    "gen": "node scripts/gen-html.mjs",
+    "prebuild": "node scripts/build-images.mjs && node scripts/gen-html.mjs",
+    "predev": "node scripts/build-images.mjs && node scripts/gen-html.mjs",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "sharp": "^0.33.5",
+    "vite": "^5.4.10"
+  },
+  "dependencies": {
+    "gsap": "^3.13.0",
+    "lenis": "^1.1.18",
+    "ogl": "^1.0.11"
+  }
+}
