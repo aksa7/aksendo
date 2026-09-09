@@ -81,6 +81,17 @@ Nothing above blocks the build; each degrades to an absence, never a broken cont
 - Grep gates pass: no `gmail / 23-year / 247,252 / 250,000 / <audio> / jaksamitauskas` in `dist/`; `bookings@aksendo.com` is the only address.
 - `grep -ri lenis src/` → empty (v5 A2).
 
+## Mobile motion set (v5 Part E)
+CSS `animation-timeline: view()` (no JS libs under 820px). Visible on first scroll:
+1. Show-row deal-in (perspective rotateX)
+2. Marginalia — mobile ticker slide-up + note crossfade; desktop GSAP edge-slide (±88px)
+3. Release cover clip-path unmask
+4. Mix card rise
+5. Section-head punch-in
+6. Pull-quote black band expands from a thin rule (+ ADE header wipe)
+
+Show artwork (when present) deals in with its row.
+
 ## Still to verify before "done"
 - Lighthouse mobile ≥92 / desktop ≥88 (run against `wrangler dev` or a deploy).
 - Real-device 55fps scroll check on the developing hero.

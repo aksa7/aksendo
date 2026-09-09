@@ -71,14 +71,15 @@ export function initMarginaliaDesktop() {
   }
 
   placed.forEach(({ note, anchor, side }) => {
-    const from = side === 'L' ? -40 : 40;
+    // v5 E — louder edge-slide (was ±40)
+    const from = side === 'L' ? -88 : 88;
     gsap.set(note, { x: from, autoAlpha: 0 });
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: anchor, start: 'top 82%', end: 'bottom 32%', scrub: 0.6 }
+      scrollTrigger: { trigger: anchor, start: 'top 88%', end: 'bottom 28%', scrub: 0.45 }
     });
-    tl.to(note, { x: 0, autoAlpha: 1, duration: 0.3, ease: 'power2.out' })
-      .to(note, { x: 0, autoAlpha: 1, duration: 0.4 })
-      .to(note, { x: from, autoAlpha: 0, duration: 0.3, ease: 'power2.in' });
+    tl.to(note, { x: 0, autoAlpha: 1, duration: 0.28, ease: 'power2.out' })
+      .to(note, { x: 0, autoAlpha: 1, duration: 0.44 })
+      .to(note, { x: from, autoAlpha: 0, duration: 0.28, ease: 'power2.in' });
   });
 
   // fonts can shift metrics; lay out after load + on resize

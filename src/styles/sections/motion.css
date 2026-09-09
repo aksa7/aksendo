@@ -1,0 +1,148 @@
+/* motion.css — scroll-driven entrances (v5 Part E / v3 §5).
+   CSS animation-timeline: view() only — zero JS cost, mobile-first.
+   Amplitude is deliberately obvious on a first scroll-through. */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* 1 — show-row deal-in (rotate + rise); art rides along with the row */
+    .show {
+      transform-origin: 50% 100%;
+      animation: show-deal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .shows__list > .show:nth-child(2),
+    .festival .show:nth-child(2) { animation-range: entry 8% entry 60%; }
+    .shows__list > .show:nth-child(3),
+    .festival .show:nth-child(3) { animation-range: entry 16% entry 65%; }
+    .shows__list > .show:nth-child(4),
+    .festival .show:nth-child(4) { animation-range: entry 24% entry 70%; }
+    .shows__list > .show:nth-child(5) { animation-range: entry 30% entry 75%; }
+
+    @keyframes show-deal {
+      from {
+        opacity: 0;
+        transform: perspective(720px) rotateX(42deg) translateY(36px);
+      }
+      to {
+        opacity: 1;
+        transform: perspective(720px) rotateX(0deg) translateY(0);
+      }
+    }
+
+    /* 2 — marginalia edge-slides (inline baseline; desktop GSAP overrides in .motion) */
+    body:not(.motion) .margin[data-side="L"],
+    body:not(.motion) .margin.margin--L {
+      animation: margin-in-l linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    body:not(.motion) .margin[data-side="R"],
+    body:not(.motion) .margin.margin--R {
+      animation: margin-in-r linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    @keyframes margin-in-l {
+      from { opacity: 0; transform: translateX(-48px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes margin-in-r {
+      from { opacity: 0; transform: translateX(48px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* 3 — release cover clip-path unmask */
+    .release__cover {
+      animation: cover-unmask linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+    .release__body {
+      animation: release-copy linear both;
+      animation-timeline: view();
+      animation-range: entry 10% entry 65%;
+    }
+    @keyframes cover-unmask {
+      from { clip-path: inset(50% 50% 50% 50%); filter: grayscale(1) contrast(1.8); }
+      to   { clip-path: inset(0 0 0 0); filter: grayscale(1) contrast(1); }
+    }
+    @keyframes release-copy {
+      from { opacity: 0; transform: translateX(28px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* 4 — mix cards rise */
+    .mix {
+      animation: mix-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    .mixes__grid > .mix:nth-child(2) { animation-range: entry 12% entry 60%; }
+    .mixes__grid > .mix:nth-child(3) { animation-range: entry 24% entry 65%; }
+    @keyframes mix-rise {
+      from { opacity: 0; transform: translateY(56px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* 5 — section heads punch in */
+    .section-head {
+      animation: head-punch linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+    @keyframes head-punch {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+        letter-spacing: 0.18em;
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        letter-spacing: var(--track-head, -0.03em);
+      }
+    }
+
+    /* 6 — sticky ticker presence (mobile) — slide up once when JS reveals it */
+    .ticker.is-on {
+      animation: ticker-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+    @keyframes ticker-in {
+      from { opacity: 0; transform: translateY(100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Part D surface — black pull-quote expands from a thin rule */
+    .pull {
+      transform-origin: center;
+      animation: pull-band linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+    @keyframes pull-band {
+      from {
+        transform: scaleY(0.06);
+        opacity: 0.85;
+      }
+      to {
+        transform: scaleY(1);
+        opacity: 1;
+      }
+    }
+
+    /* ADE group header — slight wipe with the black bar */
+    .festival__head {
+      animation: fest-bar linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    @keyframes fest-bar {
+      from { clip-path: inset(0 100% 0 0); }
+      to   { clip-path: inset(0 0 0 0); }
+    }
+  }
+}
+
+/* Safari / older: no timeline support → elements stay at rest (no FOUC from partial keyframes) */
