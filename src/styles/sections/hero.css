@@ -82,30 +82,82 @@
 .hero__next .label { opacity: 0.7; }
 .hero__next b { font-weight: 400; }
 .hero__next:hover .arrow { transform: translateX(4px); }
-.hero__next .arrow { transition: transform var(--dur-hover) ease; }
+.hero__next .arrow { transition: transform var(--dur-hover) ease; display: inline-block; }
 
 @media (max-width: 819px) {
-  .hero__media img { object-position: center 38%; }
+  .hero__media img { object-position: center 32%; }
+  .hero__media::after {
+    /* Deeper base so left-aligned type stays legible on pale sky */
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.82) 0%,
+      rgba(0, 0, 0, 0.45) 38%,
+      rgba(0, 0, 0, 0.18) 62%,
+      rgba(0, 0, 0, 0.28) 100%
+    );
+  }
   .hero__inner {
-    padding-bottom: var(--s-12);
-    text-align: center;
+    min-height: 100svh;
+    box-sizing: border-box;
+    padding-top: calc(var(--s-12) + env(safe-area-inset-top));
+    padding-bottom: max(var(--s-8), env(safe-area-inset-bottom));
+    text-align: left;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: 0;
   }
   .hero__wordmark {
-    text-align: center;
-    /* Ultra Expanded: keep well under viewport width */
-    font-size: clamp(1.7rem, 10vw, 2.85rem);
-    letter-spacing: -0.055em;
+    text-align: left;
+    font-size: clamp(1.85rem, 11vw, 3rem);
+    letter-spacing: -0.05em;
     max-width: 100%;
     padding-inline: 0;
   }
-  .hero__role { text-align: center; }
+  .hero__role {
+    text-align: left;
+    margin-top: var(--s-3);
+  }
+  .hero__role .mono {
+    font-size: var(--t-meta-sm);
+    letter-spacing: var(--track-meta);
+  }
+  /* Quiet editorial next-show — no mid-screen sandwich bars */
   .hero__next {
-    justify-content: center;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "label arrow"
+      "body body";
+    align-items: baseline;
+    column-gap: var(--s-3);
+    row-gap: 0.2rem;
+    margin-top: var(--s-6);
+    padding: var(--s-4) 0 0;
     width: 100%;
     max-width: 100%;
+    text-align: left;
+    justify-content: stretch;
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    border-bottom: none;
+  }
+  .hero__next-label {
+    grid-area: label;
+    opacity: 0.65;
+    text-transform: uppercase;
+    font-size: var(--t-meta-sm);
+    letter-spacing: var(--track-meta);
+  }
+  .hero__next-body {
+    grid-area: body;
+    font-size: var(--t-meta);
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+  .hero__next-arrow {
+    grid-area: arrow;
+    opacity: 0.85;
   }
 }

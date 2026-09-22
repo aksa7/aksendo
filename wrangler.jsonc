@@ -8,11 +8,13 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    // Ensure /api/* always hits the Worker (never asset/HTML fallback)
+    "run_worker_first": ["/api/*"]
   },
   "vars": {
     "BOOKING_TO": "bookings@aksendo.com",
-    "BOOKING_FROM": "bookings@aksendo.com"
+    "BOOKING_FROM": "Aksendo Bookings <bookings@aksendo.com>"
   }
   // Secrets set out-of-band, not in repo:
   //   wrangler secret put RESEND_API_KEY

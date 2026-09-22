@@ -155,8 +155,8 @@ const playedHtml = played.length
 
 const nextShow = upcoming[0];
 const nextShowHtml = nextShow
-  ? `<a class="hero__next" href="#shows"><span class="mono label">NEXT ▸</span> <span class="mono"><b>${monoDate(nextShow.date)}</b> · ${esc(nextShow.venue).toUpperCase()} · ${esc(nextShow.city).toUpperCase()}</span> <span class="mono arrow">→</span></a>`
-  : `<p class="hero__next mono">NEXT DATES ANNOUNCED SOON — <a href="mailto:${site.booking}">${site.booking.toUpperCase()}</a></p>`;
+  ? `<a class="hero__next" href="#shows"><span class="hero__next-label mono label">Next</span><span class="hero__next-body mono"><b>${monoDate(nextShow.date)}</b> · ${esc(nextShow.venue).toUpperCase()} · ${esc(nextShow.city).toUpperCase()}</span><span class="hero__next-arrow mono arrow" aria-hidden="true">→</span></a>`
+  : `<p class="hero__next mono"><span class="hero__next-label label">Next</span><span class="hero__next-body">Dates announced soon — <a href="mailto:${site.booking}">${site.booking.toUpperCase()}</a></span></p>`;
 
 /* ---------- music ---------- */
 function releaseCard(r) {
@@ -264,6 +264,15 @@ const signalHtml = `<section class="signal cv-auto" id="signal" aria-label="akse
   </div>
 </section>`;
 
+const entrySignalHtml = `<div class="entry__stage signal" data-entry-signal>
+  <div class="signal__inner">
+    <div class="signal__board">
+      <div class="signal__stack" aria-hidden="true">${signalBandHtml}</div>
+    </div>
+    <p class="signal__manifesto" data-entry-type="${attr(manifesto)}" aria-label="${attr(manifesto)}"></p>
+  </div>
+</div>`;
+
 /* ---------- links / footer ---------- */
 const footLinks = [];
 for (const [k, label] of [['instagram', 'INSTAGRAM'], ['spotify', 'SPOTIFY'], ['soundcloud', 'SOUNDCLOUD'], ['youtube', 'YOUTUBE'], ['ra', 'RESIDENT ADVISOR']]) {
@@ -325,6 +334,29 @@ function head({ title, desc, canonical, extraLD }) {
   ${extraLD ? `<script type="application/ld+json">${JSON.stringify(extraLD)}</script>` : ''}`;
 }
 
+/** Critical intro boot — only on the main page. Decides before first paint. */
+const entryBoot = `<style id="entry-critical">
+#entry-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;background:#000;color:#f4f2ec;margin:0;padding:0}
+html.show-intro #entry-overlay{display:flex}
+html.show-intro{overflow:hidden}
+@media (prefers-reduced-motion:reduce){
+  #entry-overlay{display:none!important}
+  html.show-intro{overflow:auto}
+}
+</style>
+<script>
+(function(){
+  var d=document.documentElement;
+  d.classList.remove('no-js');
+  d.classList.add('js');
+  var skip=false;
+  try{if(sessionStorage.getItem('aksendo:entry-seen')==='1')skip=true}catch(e){}
+  try{if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)skip=true}catch(e){}
+  if(skip)d.classList.add('skip-intro');
+  else d.classList.add('show-intro');
+})();
+</script>`;
+
 /* ---------- page ---------- */
 const genres = site.genres.join(' · ');
 
@@ -332,11 +364,15 @@ const index = `<!doctype html>
 <html lang="en" class="no-js">
 <head>
   ${head({ title: site.title, desc: site.description, canonical: site.url, extraLD: jsonld })}
+  ${entryBoot}
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="entry" hidden aria-hidden="true"><span class="entry__word">AKSENDO</span><span class="entry__skip">Scroll to skip</span></div>
+<div id="entry-overlay" class="entry" aria-hidden="true">
+  ${entrySignalHtml}
+  <span class="entry__skip">Scroll to skip</span>
+</div>
 
 <header class="topbar" data-topbar>
   <nav class="topbar__right" aria-label="Primary">

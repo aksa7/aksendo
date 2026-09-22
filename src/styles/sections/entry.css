@@ -1,27 +1,64 @@
-/* entry.css — one orchestrated moment. Hidden unless JS runs it. */
+/* entry.css — full-viewport Signal/scanline intro (no FLIP). */
 .entry {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+  /* display/position from #entry-critical in <head> */
+  gap: 0;
+}
+
+.entry__stage {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #000;
+  color: #f4f2ec;
+  border: 0;
+  overflow: visible;
+}
+
+.entry__stage.signal {
+  /* kill in-page .signal paper chrome — this is a black full-bleed boot */
+  background: #000;
+  border: 0;
+  padding-block: 0;
+  color: #f4f2ec;
+}
+
+.entry__stage .signal__inner {
+  width: 100%;
+  min-height: 100svh;
+  padding: clamp(2rem, 6vh, 4rem) clamp(0.75rem, 4vw, 2rem);
   display: grid;
-  place-items: center;
-  background: var(--ink);
+  align-content: center;
+  justify-items: center;
+  gap: clamp(1.5rem, 4vh, 2.75rem);
+  box-sizing: border-box;
 }
-.entry[hidden] { display: none; }
-.entry__word {
-  font-family: var(--font-brand);
-  font-weight: 900;
-  font-size: var(--t-wordmark);
-  line-height: 1;
-  color: var(--paper);
-  text-transform: uppercase;
-  letter-spacing: 0.35em;
-  white-space: nowrap;
-  will-change: letter-spacing, transform;
+
+.entry__stage .signal__board {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: 0;
+  min-height: 0;
+  padding: clamp(0.5rem, 2vh, 1.25rem) 0;
+  background: transparent;
 }
+
+.entry__stage .signal__manifesto {
+  color: rgba(244, 242, 236, 0.9);
+}
+
+.entry__stage .signal__manifesto.is-typing::after {
+  background: #f4f2ec;
+}
+
 .entry__skip {
   position: absolute;
-  bottom: var(--s-8); right: var(--gutter-pad);
-  font-family: var(--font-mono); font-size: var(--t-meta-sm);
-  letter-spacing: var(--track-meta); text-transform: uppercase; color: rgba(255,255,255,0.6);
+  bottom: var(--s-8);
+  right: var(--gutter-pad);
+  font-family: var(--font-mono);
+  font-size: var(--t-meta-sm);
+  letter-spacing: var(--track-meta);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+  pointer-events: none;
 }

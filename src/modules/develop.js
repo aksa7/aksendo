@@ -2,7 +2,7 @@
 // Used on the hero and (desktop) show-row artwork thumbs. Each host gets its own
 // small WebGL canvas overlay; the plain <img> always remains as the fallback.
 import { Renderer, Triangle, Program, Mesh, Texture } from 'ogl';
-import { bus } from './bus.js';
+import { bus, onHeroDevelop } from './bus.js';
 
 const FRAG = `precision highp float;
 varying vec2 vUv;
@@ -85,9 +85,10 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
     program.uniforms.uResolution.value = [gl.drawingBufferWidth, gl.drawingBufferHeight];
   }
 
-  let revealed = progressMode === 'scroll' ? 0 : 1;
+  let revealed = progressMode === 'scroll' ? bus.heroDevelop : 1;
   let inView = 0;
   let lastProgress = -1, idleSince = 0;
+  let unsubDevelop = null;
 
   if (progressMode === 'view') {
     const io = new IntersectionObserver((entries) => {
@@ -99,12 +100,22 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
     io.observe(host);
   }
 
+  if (progressMode === 'scroll') {
+    // Entry writes bus.heroDevelop every frame via WAAPI — keep the uniform in sync.
+    unsubDevelop = onHeroDevelop((p) => {
+      revealed = p;
+      kick();
+    });
+    revealed = bus.heroDevelop;
+  }
+
   function computeProgress() {
     if (progressMode === 'view') return revealed * Math.max(inView, 0.15);
+    // Hero: entry-driven develop progress × scroll visibility (stays 1 at top)
     const r = host.getBoundingClientRect();
     const h = r.height || 1;
     const vis = Math.min(Math.max(1 - (-r.top) / (h * 0.9), 0), 1);
-    return revealed * vis;
+    return bus.heroDevelop * vis;
   }
 
   function frame(t) {
@@ -115,7 +126,8 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
     program.uniforms.uTime.value = t * 0.001;
     renderer.render({ scene: mesh });
 
-    const moving = Math.abs(p - lastProgress) > 0.0006 || bus.velocity > 0.002;
+    const developing = progressMode === 'scroll' && bus.heroDevelop < 0.999;
+    const moving = Math.abs(p - lastProgress) > 0.0006 || bus.velocity > 0.002 || developing;
     lastProgress = p;
     if (moving) idleSince = t;
     if (t - idleSince > 400) { running = false; return; }
@@ -142,6 +154,12 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
   document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
 
   function reveal() {
+    // Show thumbs: short local tween. Hero develop is owned by entry → bus.heroDevelop.
+    if (progressMode === 'scroll') {
+      revealed = bus.heroDevelop;
+      kick();
+      return;
+    }
     const start = performance.now();
     const dur = 850;
     const step = (t) => {
@@ -152,8 +170,14 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
     requestAnimationFrame(step);
   }
 
+  function setProgress(p) {
+    revealed = Math.min(Math.max(p, 0), 1);
+    kick();
+  }
+
   function dispose() {
     disposed = true;
+    unsubDevelop?.();
     cancelAnimationFrame(raf);
     window.removeEventListener('resize', onResize);
     window.removeEventListener('scroll', onScroll, { capture: true });
@@ -166,7 +190,7 @@ function attachDevelop(host, { progressMode = 'scroll' } = {}) {
     img.style.opacity = '';
   }
 
-  return { reveal, dispose, kick };
+  return { reveal, setProgress, dispose, kick };
 }
 
 export function initDevelopHero() {

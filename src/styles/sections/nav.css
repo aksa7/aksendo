@@ -26,3 +26,23 @@
   padding-bottom: 2px;
 }
 .no-js .topbar, .reduced .topbar { opacity: 1; }
+
+/* Mobile: no difference-blend (goes grey on grey photos). Tone switches via JS. */
+@media (max-width: 819px) {
+  .topbar {
+    mix-blend-mode: normal;
+    color: #fff;
+    padding-top: max(var(--s-4), env(safe-area-inset-top));
+  }
+  .topbar .mono,
+  .topbar__book { color: inherit; }
+  .topbar[data-tone="light"] { color: #000; }
+  .topbar[data-tone="dark"] { color: #fff; }
+  .topbar[data-tone="dark"] .topbar__book {
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+  }
+  .topbar__book {
+    font-size: var(--t-meta);
+    font-weight: 500;
+  }
+}

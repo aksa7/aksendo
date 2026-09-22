@@ -2,13 +2,16 @@
 // Baseline (this file only) is tiny and runs everywhere. Heavy motion libraries
 // (GSAP, OGL) are dynamically imported only on capable desktops.
 import { reducedMotion, isDesktop, weakDevice, hasWebGL2 } from './modules/capabilities.js';
+import { setHeroDevelop } from './modules/bus.js';
 import { initForm } from './modules/form.js';
 import { initMixes } from './modules/embeds.js';
 import { initClockFallback } from './modules/clock.js';
 import { initEvolvingLine } from './modules/evolving.js';
 
 const html = document.documentElement;
+// Head boot may already have swapped no-js → js; keep idempotent.
 html.classList.remove('no-js');
+if (!html.classList.contains('js')) html.classList.add('js');
 
 // year
 document.querySelectorAll('[data-year]').forEach((el) => (el.textContent = String(new Date().getFullYear())));
@@ -19,15 +22,41 @@ initMixes();
 initClockFallback();
 initEvolvingLine();
 import('./modules/signal.js').then((m) => m.initSignal());
+import('./modules/topbar-tone.js').then((m) => m.initTopbarTone());
 
 const reduced = reducedMotion();
 if (reduced) html.classList.add('reduced');
+
+// Entry runs for all motion-ok clients (desktop + mobile). Overlay was already
+// shown/skipped by the synchronous <head> script — this only animates or settles.
+// Hero dither progress is driven by entry → bus.heroDevelop (not a post-entry jump).
+let entryDone = !html.classList.contains('show-intro');
+let heroRef = null;
+
+if (entryDone || reduced) setHeroDevelop(1);
+
+if (!reduced) {
+  import('./modules/entry.js').then((m) => {
+    m.runEntry({
+      onReveal: () => {
+        entryDone = true;
+        setHeroDevelop(1);
+        heroRef?.kick?.();
+      }
+    });
+  });
+} else {
+  entryDone = true;
+  // Ensure overlay gone if head somehow left show-intro under reduced
+  html.classList.remove('show-intro');
+  html.classList.add('skip-intro');
+  document.getElementById('entry-overlay')?.remove();
+}
 
 // ---- motion gate ----
 if (!reduced && isDesktop()) {
   bootDesktop();
 } else if (!reduced && !isDesktop()) {
-  // mobile: ticker only, no libraries
   import('./modules/ticker.js').then((m) => m.initTicker());
 }
 
@@ -42,29 +71,20 @@ async function bootDesktop() {
   initReactiveType();
   initGrain();
 
-  // marginalia (desktop scrub) + flip
   const { initMarginaliaDesktop } = await import('./modules/marginalia.js');
   initMarginaliaDesktop();
   import('./modules/flip.js').then((m) => m.initFlip());
 
-  // cursor clock removed — was colliding with branding / confusing as "Amsterdam" label
-
-  // developing hero + show artwork + entry, guarded by hardware
-  let hero = null;
   if (hasWebGL2() && !weakDevice()) {
     const { initDevelopHero, initDevelopShowArt } = await import('./modules/develop.js');
-    hero = initDevelopHero();
+    heroRef = initDevelopHero();
     initDevelopShowArt();
-    frameProbe(hero);           // live self-downgrade
+    frameProbe(heroRef);
+    // Sync to current entry progress (may be mid-sequence or already done)
+    heroRef?.kick?.();
   }
-
-  const { runEntry } = await import('./modules/entry.js');
-  runEntry({ onReveal: () => hero?.reveal?.() });
-  if (!hero) {/* plain hero photo stands */}
 }
 
-// Sample ~90 frames after the WebGL layer activates; if the page can't hold
-// frame time, dispose the developing layer and let the plain photo stand.
 function frameProbe(hero) {
   if (!hero || !hero.reveal) return;
   let n = 0, sum = 0, last = performance.now();
@@ -73,7 +93,7 @@ function frameProbe(hero) {
     if (dt > 0 && dt < 200) { sum += dt; n++; }
     if (n < 90) { requestAnimationFrame(step); return; }
     const mean = sum / n;
-    if (mean > 20) { hero.dispose?.(); /* known behaviour, see NOTES */ }
+    if (mean > 20) { hero.dispose?.(); }
   }
   requestAnimationFrame(step);
 }

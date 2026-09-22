@@ -19,5 +19,25 @@ export default defineConfig({
         press: resolve(__dirname, 'press.html')
       }
     }
+  },
+  server: {
+    // Local `npm run dev` has no Worker — proxy booking API to production
+    // so the form doesn't die with "Failed to fetch".
+    proxy: {
+      '/api': {
+        target: 'https://aksendo.com',
+        changeOrigin: true,
+        secure: true
+      }
+    }
+  },
+  preview: {
+    proxy: {
+      '/api': {
+        target: 'https://aksendo.com',
+        changeOrigin: true,
+        secure: true
+      }
+    }
   }
 });

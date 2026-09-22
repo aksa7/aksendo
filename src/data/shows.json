@@ -10,5 +10,6 @@
   { "date": "2026-10-02", "time": null, "venue": "Corner Café", "city": "Vilnius", "country": "LT", "billing": "Road To ADE · Decks & Stories", "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-10-15", "time": null, "venue": "TBA", "city": "Berlin", "country": "DE", "billing": null, "tickets": null, "artwork": null, "festival": null },
   { "date": "2026-10-22", "time": null, "venue": "Zu Hause", "city": "Amsterdam", "country": "NL", "billing": "Decks&Stories, Beskar Bookings", "tickets": null, "artwork": null, "festival": "ADE 2026" },
-  { "date": "2026-10-22", "time": null, "venue": "ADE Network Hub", "city": "Amsterdam", "country": "NL", "billing": "with Beskar Bookings, Decks & Stories, Loud Ladies", "tickets": null, "artwork": null, "festival": "ADE 2026" }
+  { "date": "2026-10-22", "time": null, "venue": "ADE Network Hub", "city": "Amsterdam", "country": "NL", "billing": "with Beskar Bookings, Decks & Stories, Loud Ladies", "tickets": null, "artwork": null, "festival": "ADE 2026" },
+  { "date": "2026-10-24", "time": null, "venue": "Private House Party", "city": "Amsterdam", "country": "NL", "billing": null, "tickets": null, "artwork": null, "festival": "ADE 2026" }
 ]
