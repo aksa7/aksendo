@@ -1,151 +1,189 @@
-/* signal.css — FRAMEHAUS slice stack on paper: full aksendo nick, ink type, soft corner shade. */
+/* signal.css — FRAMEHAUS scanline: full-bleed black board, slower puzzle. */
 .signal {
   position: relative;
   overflow: clip;
   background: var(--paper-warm);
   color: var(--ink);
-  padding-block: clamp(3.5rem, 12vw, 8rem);
+  padding-block: clamp(2rem, 5vw, 3.5rem);
   border-top: 1px solid var(--grey-20);
   border-bottom: 1px solid var(--grey-20);
 }
-/* soft ink only at the far corners — not a black stage */
-.signal::before,
-.signal::after {
-  content: "";
-  position: absolute;
-  width: min(28vw, 18rem);
-  height: min(28vw, 18rem);
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(circle at center, rgba(0,0,0,0.14), transparent 70%);
-}
-.signal::before { top: -8%; left: -6%; }
-.signal::after { bottom: -10%; right: -8%; }
 
 .signal__inner {
-  position: relative;
-  z-index: 1;
   width: 100%;
-  max-width: var(--maxw);
   margin-inline: auto;
-  padding-inline: var(--gutter-pad);
+  padding-inline: 0;
   display: grid;
   justify-items: center;
-  gap: var(--s-10);
+  gap: clamp(1.25rem, 3vw, 2rem);
   text-align: center;
+  box-sizing: border-box;
 }
-.signal__stack {
-  position: relative;
-  width: min(100%, 58rem);
+
+/* Full-bleed black stage — edge to edge; type fills most of the stage */
+.signal__board {
+  background: #000;
+  color: #f4f2ec;
+  width: 100vw;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  /* Less empty black — room goes to the puzzle */
+  padding: clamp(1.35rem, 3.8vw, 2.75rem) clamp(0.85rem, 3.5vw, 2.5rem);
+  box-sizing: border-box;
   display: grid;
-  justify-items: center;
-  gap: 0;
-  /* elliptical window that still shows the full word */
-  -webkit-mask-image: radial-gradient(ellipse 78% 70% at 50% 50%, #000 55%, transparent 100%);
-  mask-image: radial-gradient(ellipse 78% 70% at 50% 50%, #000 55%, transparent 100%);
+  place-items: center;
+  min-height: clamp(13rem, 32vw, 22rem);
 }
-.signal__line {
+
+.signal__stack {
+  --signal-size: 13vw;
+  /* Slightly airier gaps = taller FRAMEHAUS silhouette */
+  --signal-gap: clamp(5px, 1.05vw, 14px);
+  position: relative;
+  display: grid;
+  justify-items: stretch;
+  gap: var(--signal-gap);
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+}
+
+.signal__band {
+  position: relative;
   display: block;
+  width: 100%;
+  height: calc(var(--signal-size) * var(--h));
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+.signal__glyph {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--signal-size) * var(--y) * -1);
+  transform: translateX(-50%);
+  display: block;
+  width: max-content;
   font-family: var(--font-brand);
   font-weight: 900;
-  font-size: clamp(2.6rem, 12vw, 8rem);
+  font-size: var(--signal-size);
   line-height: 0.82;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.05em;
   text-transform: lowercase;
-  color: var(--ink);
+  color: #f4f2ec;
   white-space: nowrap;
   user-select: none;
+  pointer-events: none;
 }
-/* FRAMEHAUS slices: centre full, outer rows clipped to top/bottom of glyphs */
-.signal__line:nth-child(1),
-.signal__line:nth-child(2),
-.signal__line:nth-child(3) {
-  height: 0.34em;
-  overflow: hidden;
-  opacity: 0.55;
+
+.signal__band--core {
+  z-index: 1;
+  width: max-content;
+  justify-self: center;
 }
-.signal__line:nth-child(1) { height: 0.22em; opacity: 0.28; }
-.signal__line:nth-child(2) { height: 0.28em; opacity: 0.4; }
-.signal__line:nth-child(3) { height: 0.36em; opacity: 0.62; }
-.signal__line:nth-child(4) {
-  height: auto;
-  overflow: visible;
-  opacity: 1;
-  padding-block: 0.02em;
+.signal__band--core .signal__glyph {
+  position: relative;
+  left: auto;
+  transform: none;
+  top: calc(var(--signal-size) * var(--y) * -1);
 }
-.signal__line:nth-child(5),
-.signal__line:nth-child(6),
-.signal__line:nth-child(7) {
-  height: 0.34em;
-  overflow: hidden;
-  opacity: 0.55;
-  display: flex;
-  align-items: flex-end;
-}
-.signal__line:nth-child(5) { height: 0.36em; opacity: 0.62; }
-.signal__line:nth-child(6) { height: 0.28em; opacity: 0.4; }
-.signal__line:nth-child(7) { height: 0.22em; opacity: 0.28; }
 
 .signal__manifesto {
   font-family: var(--font-mono);
-  font-size: var(--t-meta);
-  letter-spacing: var(--track-meta);
+  /* sized to keep the full line on one row down to ~320px */
+  font-size: clamp(0.58rem, 2.15vw, 0.92rem);
+  letter-spacing: 0.1em;
   text-transform: lowercase;
-  color: var(--grey-60);
-  max-width: 36ch;
+  color: var(--ink);
+  margin: 0;
+  padding-inline: clamp(0.5rem, 3vw, 1.5rem);
+  line-height: 1.4;
+  min-height: 1.4em;
+  opacity: 0.92;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: clip;
+}
+.signal__manifesto.is-typing::after {
+  content: "";
+  display: inline-block;
+  width: 0.45ch;
+  height: 0.95em;
+  margin-left: 2px;
+  background: var(--ink);
+  vertical-align: -0.08em;
+  animation: signal-caret 0.85s steps(1) infinite;
+}
+@keyframes signal-caret {
+  50% { opacity: 0; }
 }
 
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .signal__line:nth-child(1),
-    .signal__line:nth-child(2),
-    .signal__line:nth-child(3) {
-      animation: slice-down linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 35%;
-    }
-    .signal__line:nth-child(4) {
-      animation: slice-centre linear both;
-      animation-timeline: view();
-      animation-range: entry 5% cover 40%;
-    }
-    .signal__line:nth-child(5),
-    .signal__line:nth-child(6),
-    .signal__line:nth-child(7) {
-      animation: slice-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 35%;
-    }
-    .signal__manifesto {
-      animation: signal-cap linear both;
-      animation-timeline: view();
-      animation-range: entry 25% cover 50%;
-    }
-    @keyframes slice-down {
-      from { transform: translateY(-1.2em); opacity: 0; }
-      to   { transform: translateY(0); }
-    }
-    @keyframes slice-up {
-      from { transform: translateY(1.2em); opacity: 0; }
-      to   { transform: translateY(0); }
-    }
-    @keyframes slice-centre {
-      from { letter-spacing: 0.22em; opacity: 0; transform: scale(0.96); }
-      to   { letter-spacing: -0.045em; opacity: 1; transform: scale(1); }
-    }
-    @keyframes signal-cap {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: none; }
-    }
+/* Slow puzzle assemble */
+.signal:not(.is-inview) .signal__band {
+  opacity: 0;
+  transform: translateX(var(--from, 64px));
+}
+.signal.is-inview .signal__band {
+  animation: signal-puzzle 2.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i) * 210ms);
+}
+.signal__band:nth-child(odd) { --from: -72px; }
+.signal__band:nth-child(even) { --from: 72px; }
+.signal__band--core { --from: 0px; }
+
+@keyframes signal-puzzle {
+  from {
+    opacity: 0;
+    transform: translateX(var(--from, 64px)) translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 
-@media (max-width: 640px) {
-  .signal__line {
-    font-size: clamp(2.1rem, 14vw, 3.4rem);
+@media (prefers-reduced-motion: reduce) {
+  .signal:not(.is-inview) .signal__band,
+  .signal.is-inview .signal__band {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none;
+  }
+  .signal__manifesto.is-typing::after { display: none; }
+}
+
+@media (max-width: 720px) {
+  .signal {
+    padding-block: clamp(1.1rem, 4vw, 1.75rem);
+  }
+  .signal__board {
+    width: 100vw;
+    max-width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    min-height: clamp(20rem, 62vh, 30rem);
+    padding: clamp(1.75rem, 7vw, 3rem) clamp(0.55rem, 3.5vw, 1rem);
   }
   .signal__stack {
-    -webkit-mask-image: radial-gradient(ellipse 92% 78% at 50% 50%, #000 58%, transparent 100%);
-    mask-image: radial-gradient(ellipse 92% 78% at 50% 50%, #000 58%, transparent 100%);
+    --signal-size: 14vw;
+    --signal-gap: clamp(4px, 1.15vw, 9px);
+  }
+  .signal__manifesto {
+    font-size: clamp(0.52rem, 3.1vw, 0.78rem);
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (min-width: 1100px) {
+  .signal__board {
+    min-height: clamp(16rem, 30vw, 24rem);
+    padding-block: clamp(1.75rem, 4vw, 3.25rem);
+  }
+  .signal__stack {
+    --signal-size: min(11.5vw, 10rem);
+    --signal-gap: clamp(6px, 0.95vw, 14px);
   }
 }

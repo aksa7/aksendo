@@ -28,27 +28,41 @@ export function initMarginaliaDesktop() {
   gutters.setAttribute('aria-hidden', 'true');
   main.appendChild(gutters);
 
-  // alternate sides strictly in DOM order (ping-pong), overriding data-side ties
+  // Prefer authored data-side so Pico streams (R) / Zamna (L) stay opposite each other
   let flip = true;
   const placed = notes.map((note) => {
     const id = note.dataset.margin;
     const anchorSel = ANCHORS[id];
     const anchor = anchorSel && document.querySelector(anchorSel);
     if (!anchor) { note.remove(); return null; }
-    const side = (flip = !flip) ? 'L' : 'R';
+    const authored = note.dataset.side;
+    const side = (authored === 'L' || authored === 'R')
+      ? authored
+      : ((flip = !flip) ? 'L' : 'R');
+    note.dataset.side = side;
+    note.classList.toggle('margin--L', side === 'L');
+    note.classList.toggle('margin--R', side === 'R');
     note.setAttribute('aria-hidden', 'true');
     gutters.appendChild(note);
-    return { note, anchor, side };
+    return { note, anchor, side, id };
   }).filter(Boolean);
 
-  const GAP = 28, EDGE = 20;
+  const GAP = 28, EDGE = 20, STACK = 48;
   function layout() {
     const mainTop = main.getBoundingClientRect().top + window.scrollY;
     const vw = window.innerWidth;
+    const stackIndex = new Map();
+
     placed.forEach(({ note, anchor, side }) => {
       const r = anchor.getBoundingClientRect();
-      const top = r.top + window.scrollY - mainTop + Math.min(r.height / 2, 90);
+      const key = `${side}::${anchor.id || anchor.dataset.bio || ''}`;
+      const idx = stackIndex.get(key) || 0;
+      stackIndex.set(key, idx + 1);
+
+      // Align near the top of the release (title band), stack if same side+anchor
+      const top = r.top + window.scrollY - mainTop + 18 + idx * STACK;
       note.style.top = `${top}px`;
+
       if (side === 'L') {
         const avail = r.left - EDGE - GAP;
         note.style.right = `${vw - r.left + GAP}px`;
@@ -69,7 +83,6 @@ export function initMarginaliaDesktop() {
   }
 
   placed.forEach(({ note, anchor, side }) => {
-    // v5 E — louder edge-slide (was ±40)
     const from = side === 'L' ? -88 : 88;
     gsap.set(note, { x: from, autoAlpha: 0 });
     const tl = gsap.timeline({
@@ -80,12 +93,9 @@ export function initMarginaliaDesktop() {
       .to(note, { x: from, autoAlpha: 0, duration: 0.28, ease: 'power2.in' });
   });
 
-  // fonts can shift metrics; lay out after load + on resize
   layout();
   window.addEventListener('load', layout);
   if (document.fonts?.ready) document.fonts.ready.then(layout);
   let rt;
   window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 150); });
 }
-
-// (mobile ticker lives in ticker.js — no GSAP dependency there)

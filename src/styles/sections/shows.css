@@ -84,6 +84,57 @@
 }
 .shows__empty a { border-bottom: 1px solid currentColor; }
 
+/* Scroll-in motion for the tour table */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .show {
+      animation: show-row-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 42%;
+    }
+    .shows__list > .show:nth-child(odd),
+    .festival .show:nth-child(odd) {
+      animation-name: show-row-in-l;
+      animation-range: entry 2% entry 44%;
+    }
+    .shows__list > .show:nth-child(even),
+    .festival .show:nth-child(even) {
+      animation-name: show-row-in-r;
+      animation-range: entry 6% entry 48%;
+    }
+    .festival__head {
+      animation: show-fest-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    .show__date {
+      animation: show-date-tick linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+    @keyframes show-row-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes show-row-in-l {
+      from { opacity: 0; transform: translateX(-28px); filter: blur(2px); }
+      to   { opacity: 1; transform: none; filter: none; }
+    }
+    @keyframes show-row-in-r {
+      from { opacity: 0; transform: translateX(28px); filter: blur(2px); }
+      to   { opacity: 1; transform: none; filter: none; }
+    }
+    @keyframes show-fest-in {
+      from { opacity: 0; clip-path: inset(0 100% 0 0); }
+      to   { opacity: 1; clip-path: inset(0 0 0 0); }
+    }
+    @keyframes show-date-tick {
+      from { opacity: 0; letter-spacing: 0.35em; }
+      to   { opacity: 1; letter-spacing: var(--track-meta); }
+    }
+  }
+}
+
 /* selected appearances — film-credit stack */
 .appearances {
   margin-top: var(--s-16);

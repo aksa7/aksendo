@@ -1,21 +1,29 @@
 /* contact.css — loud mailto, links, booking form. */
 .contact { background: var(--paper); }
+.contact .wrap {
+  /* hover invert + ultra-wide type must not clip against the grid column */
+  overflow-x: visible;
+}
 .contact-mail,
 .contact__book {
   font-family: var(--font-display);
   font-weight: 800;
-  /* sized so BOOKINGS@AKSENDO.COM fits one line from ~320px up */
-  font-size: clamp(1.05rem, 5.2vw, 4.75rem);
-  line-height: 1.05;
+  /* sized so BOOKINGS@AKSENDO.COM fits one line across the full wrap */
+  font-size: clamp(1rem, 5.6vw, 4.25rem);
+  line-height: 1.15;
   letter-spacing: -0.03em;
   text-transform: uppercase;
   font-variation-settings: "wght" 800, "wdth" 100;
   display: inline-block;
+  width: max-content;
   max-width: 100%;
+  box-sizing: border-box;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  padding: 0.06em 0.1em;
+  padding: 0.1em 0.18em;
+  margin-inline: -0.18em;
   overflow: visible;
+  white-space: nowrap;
 }
 .contact-mail__part { white-space: nowrap; display: inline; }
 .contact-mail:hover,
@@ -24,9 +32,16 @@
   color: var(--paper);
 }
 
-@media (max-width: 419px) {
+@media (max-width: 520px) {
   /* force a clean two-line stack only when one line truly can't fit */
-  .contact-mail { display: flex; flex-direction: column; align-items: flex-start; }
+  .contact-mail {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    white-space: normal;
+    width: 100%;
+    max-width: 100%;
+  }
   .contact-mail__part { display: block; }
 }
 

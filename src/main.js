@@ -18,6 +18,7 @@ initForm();
 initMixes();
 initClockFallback();
 initEvolvingLine();
+import('./modules/signal.js').then((m) => m.initSignal());
 
 const reduced = reducedMotion();
 if (reduced) html.classList.add('reduced');

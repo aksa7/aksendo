@@ -162,29 +162,47 @@ const nextShowHtml = nextShow
 function releaseCard(r) {
   const tags = [r.genre.toUpperCase(), r.label ? r.label.toUpperCase() : null, r.with ? `WITH ${r.with.toUpperCase()}` : null]
     .filter(Boolean).map((t) => `<span class="mono mono--dim">${esc(t)}</span>`).join('');
+  const spotifyHref = r.links.spotify || links.artist.spotify;
+  const soundcloudHref = r.links.soundcloud || links.artist.soundcloud;
   const linkEls = [];
-  if (r.links.spotify) linkEls.push(`<a href="${attr(r.links.spotify)}" target="_blank" rel="noopener">SPOTIFY ↗</a>`);
-  if (r.links.soundcloud) {
-    const labelName = r.label ? r.label.toUpperCase() : 'SOUNDCLOUD';
-    linkEls.push(`<a href="${attr(r.links.soundcloud)}" target="_blank" rel="noopener">SOUNDCLOUD ↗</a>`);
-    // label upload = credential note
-    r._cred = `VIA ${labelName} · SOUNDCLOUD`;
+  if (spotifyHref) linkEls.push(`<a href="${attr(spotifyHref)}" target="_blank" rel="noopener">SPOTIFY ↗</a>`);
+  if (soundcloudHref) linkEls.push(`<a href="${attr(soundcloudHref)}" target="_blank" rel="noopener">SOUNDCLOUD ↗</a>`);
+  if (r.links.soundcloud && r.label) {
+    r._cred = `VIA ${r.label.toUpperCase()} · SOUNDCLOUD`;
   }
   const cred = r._cred ? `<div class="release__cred mono mono--dim">${esc(r._cred)}</div>` : '';
   const cover = pic({
-    name: `cover-${r.id}`, widths: [400, 800, 1200], sizes: '(max-width:640px) 88px, 120px',
+    name: `cover-${r.id}`, widths: [400, 800, 1200], sizes: '(max-width:640px) 112px, 168px',
     alt: `${r.title} — cover art`, w: 1200, h: 1200, cls: ''
   });
+  const notes = releaseMargins(r);
   return `<article class="release" id="release-${r.id}">
     <div class="release__cover">${cover}</div>
     <div class="release__body">
       <h3 class="release__title">${esc(r.title)}</h3>
       <div class="release__tags">${tags}</div>
       <p class="release__note">${esc(r.note)}</p>
-      <div class="release__links">${linkEls.join('')}</div>
+      <div class="release__links">${linkEls.join('<span class="release__sep" aria-hidden="true"> / </span>')}</div>
       ${cred}
     </div>
+    ${notes}
   </article>`;
+}
+/** Side notes live inside each release so they stay tied to the right track (inline + JS gutters). */
+function releaseMargins(r) {
+  if (r.id === 'pico-de-amor') {
+    return [
+      picoStreams ? margin('R', 'streams', `<b>${picoStreams}</b> · PICO DE AMOR`) : '',
+      margin('L', 'zamna', 'HEARD AT ZAMNA TULUM')
+    ].join('');
+  }
+  if (r.id === 'berlin-to-ade') {
+    return margin('R', 'road', 'WRITTEN ON THE ROAD, BERLIN → AMSTERDAM');
+  }
+  if (r.id === 'temporary-miracle') {
+    return margin('L', 'cyprus', 'CYPRUS — THE FIRST ONE');
+  }
+  return '';
 }
 const musicHtml = releases.map(releaseCard).join('');
 
@@ -209,8 +227,8 @@ function mixCard(m) {
 </article>`;
 }
 const mixesHtml = mixes.length
-  ? `<div class="mixes__grid">${mixes.map(mixCard).join('')}</div>
-      <div class="mixes__more"><a href="${attr(ytChannel)}" target="_blank" rel="noopener">Watch more mixes ↗</a></div>`
+  ? `<div class="mixes__grid bleed">${mixes.map(mixCard).join('')}</div>
+      <div class="mixes__more bleed"><a href="${attr(ytChannel)}" target="_blank" rel="noopener">Watch more mixes ↗</a></div>`
   : `<p class="mixes__empty">Mixes on YouTube — <a href="${attr(ytChannel)}" target="_blank" rel="noopener">Open channel ↗</a></p>`;
 
 /* ---------- appearances (film credits) ---------- */
@@ -221,11 +239,28 @@ const appearancesHtml = `<div class="appearances">
   </ul>
 </div>`;
 
-const signalLines = Array.from({ length: 7 }, () => `<span class="signal__line">aksendo</span>`).join('');
+/* FRAMEHAUS scanline mark — horizontal bands of one nick, clean cuts, paper around. */
+/* Slightly taller glyph window so outer bands read more FRAMEHAUS */
+const signalBands = [
+  { h: 0.055, y: 0.00 },
+  { h: 0.09, y: 0.055 },
+  { h: 0.115, y: 0.145 },
+  { h: 0.30, y: 0.26, core: true },
+  { h: 0.115, y: 0.56 },
+  { h: 0.09, y: 0.675 },
+  { h: 0.055, y: 0.765 }
+];
+const signalBandHtml = signalBands.map((b, i) => {
+  const core = b.core ? ' signal__band--core' : '';
+  return `<span class="signal__band${core}" data-band="${i}" style="--h:${b.h};--y:${b.y};--i:${i}"><span class="signal__glyph"${b.core ? ' data-signal-mid' : ''}>aksendo</span></span>`;
+}).join('');
+const manifesto = site.manifesto || 'shaping my sound little by little';
 const signalHtml = `<section class="signal cv-auto" id="signal" aria-label="aksendo">
   <div class="signal__inner">
-    <div class="signal__stack" aria-hidden="true">${signalLines}</div>
-    <p class="signal__manifesto">${esc(site.manifesto || 'shaping my sound little by little')}</p>
+    <div class="signal__board">
+      <div class="signal__stack" aria-hidden="true">${signalBandHtml}</div>
+    </div>
+    <p class="signal__manifesto" data-signal-type="${attr(manifesto)}" aria-label="${attr(manifesto)}"></p>
   </div>
 </section>`;
 
@@ -350,11 +385,7 @@ const index = `<!doctype html>
   <section class="section section--warm cv-auto" id="music" aria-labelledby="music-h">
     <div class="wrap grid">
       <h2 class="section-head" id="music-h">Music</h2>
-      ${picoStreams ? margin('R', 'streams', `<b>${picoStreams}</b> · PICO DE AMOR`) : ''}
       ${musicHtml}
-      ${margin('L', 'zamna', 'HEARD AT ZAMNA TULUM')}
-      ${margin('R', 'road', 'WRITTEN ON THE ROAD, BERLIN → AMSTERDAM')}
-      ${margin('L', 'cyprus', 'CYPRUS — THE FIRST ONE')}
     </div>
   </section>
 
@@ -385,7 +416,7 @@ const index = `<!doctype html>
   <footer class="section contact cv-auto" id="contact" aria-labelledby="contact-h">
     <div class="wrap grid">
       <h2 class="section-head" id="contact-h">Contact</h2>
-      <a class="contact-mail contact__book" href="mailto:${site.booking}"><span class="contact-mail__part">BOOKINGS@</span><span class="contact-mail__part">AKSENDO.COM</span></a>
+      <a class="contact-mail contact__book bleed" href="mailto:${site.booking}"><span class="contact-mail__part">BOOKINGS@</span><span class="contact-mail__part">AKSENDO.COM</span></a>
       <div class="contact__row">
         <a href="${attr(site.pressUrl || site.pressPdf)}" target="_blank" rel="noopener">PRESS ↗</a>
         ${site.pressPdf ? `<a href="${attr(site.pressPdf)}" download>DOWNLOAD PRESS KIT (PDF) ↓</a>` : ''}
