@@ -323,7 +323,10 @@ function head({ title, desc, canonical, extraLD }) {
   <meta name="twitter:title" content="${attr(title)}">
   <meta name="twitter:description" content="${attr(desc)}">
   <meta name="twitter:image" content="${attr(ogImg)}">
+  <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" as="font" type="font/woff2" href="/fonts/archivo-var.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="/fonts/jetbrainsmono-latin.woff2" crossorigin>
   <link rel="preload" as="font" type="font/otf" href="/fonts/bernoru-blackultraexpanded.otf" crossorigin>
@@ -530,7 +533,6 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 `;
 await writeFile(join(ROOT, 'public', 'sitemap.xml'), sitemap);
 await writeFile(join(ROOT, 'public', 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${site.url}/sitemap.xml\n`);
-await writeFile(join(ROOT, 'public', 'favicon.svg'),
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#000"/><text x="50" y="72" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="70" text-anchor="middle" fill="#fff">A</text></svg>`);
+// Favicons live in public/ (do not overwrite — RealFavicon / design assets)
 
 console.log(`gen-html: ${upcoming.length} upcoming, ${played.length} played, ${releases.length} releases, ${mixes.length} mixes, ${events.length} events. index.html + press.html written.`);

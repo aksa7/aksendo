@@ -16,12 +16,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // www -> apex 301
-    if (url.hostname.startsWith('www.')) {
-      url.hostname = url.hostname.slice(4);
-      return Response.redirect(url.toString(), 301);
-    }
-
+    // Booking API first — never www-redirect a POST (301 → browsers retry as GET → 405).
     if (url.pathname === '/api/booking' || url.pathname === '/api/booking/') {
       if (request.method === 'OPTIONS') {
         return new Response(null, { status: 204, headers: corsHeaders(request) });
@@ -39,6 +34,12 @@ export default {
           request
         );
       }
+    }
+
+    // www → apex with 308 so method/body are preserved for any future non-GET
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4);
+      return Response.redirect(url.toString(), 308);
     }
 
     // static assets
